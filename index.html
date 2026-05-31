@@ -204,7 +204,8 @@ body{font-family:var(--fn)} :lang(ar) body, html[lang='ar'] body, html[dir='rtl'
   flex:1;background:var(--s2);border:1px solid var(--border);
   border-radius:10px;padding:10px 13px;color:var(--text);
   font-family:var(--fn);font-size:13px;outline:none;
-  resize:none;line-height:1.5;max-height:88px
+  resize:none;line-height:1.5;overflow:hidden;
+  min-height:42px;max-height:160px;box-sizing:border-box
 }
 .chat-input:focus{border-color:var(--accent2)}
 .chat-input::placeholder{color:var(--text3)}
@@ -1164,7 +1165,7 @@ async function sendChat() {
   if (!msg || state.loadingChat) return;
   const idea = state.ideas.find(i => i.id === state.selectedId);
   if (!idea || !state.aiAnalysis) return;
-  $('chat-input').value = '';
+  $('chat-input').value = ''; const ci=$('chat-input'); if(ci){ci.style.height='auto';}
   state.chatHistory.push({ role:'user', text:msg });
   state.loadingChat = true;
   renderChat();
@@ -1395,6 +1396,10 @@ function autoGrow(el) {
 const titleInput = $('idea-title-input');
 if (titleInput) {
   titleInput.addEventListener('input', () => autoGrow(titleInput));
+}
+const chatInput = $('chat-input');
+if (chatInput) {
+  chatInput.addEventListener('input', () => autoGrow(chatInput));
 }
 
 if ('serviceWorker' in navigator) {
