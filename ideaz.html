@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IdeaSpark">
+<meta name="theme-color" content="#08080f">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>IdeaSpark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#08080f;--s1:#0f0f1a;--s2:#161624;--s3:#1e1e30;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --accent:#7b6cf0;--accent2:#0fd9a0;--accent3:#f07b6c;
+  --text:#eeeef8;--text2:#8888aa;--text3:#55556a;
+  --r:16px;--fn:'Plus Jakarta Sans',sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);overflow:hidden}
+body{font-family:var(--fn)}
+.app{
+  max-width:430px;height:100vh;height:100dvh;
+  margin:0 auto;background:var(--bg);
+  display:flex;flex-direction:column;overflow:hidden;
+  position:relative;
+}
+/* Header */
+.hdr{
+  padding-top:max(env(safe-area-inset-top,44px),44px);
+  padding-left:20px;padding-right:20px;
+  background:linear-gradient(to bottom,var(--bg) 70%,transparent);
+  position:relative;z-index:100;flex-shrink:0;
+}
+.hdr-inner{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{
+  width:36px;height:36px;border-radius:11px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0
+}
+.logo-name{
+  font-size:19px;font-weight:800;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.3px
+}
+.hdr-btns{display:flex;gap:8px}
+.icon-btn{
+  width:36px;height:36px;border-radius:10px;
+  border:1px solid var(--border2);background:var(--s2);
+  color:var(--text2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;transition:all .18s
+}
+.icon-btn.active,.icon-btn:active{border-color:var(--accent);color:var(--accent)}
+/* Content */
+.content{flex:1;padding:16px 20px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding-bottom:calc(88px + env(safe-area-inset-bottom,16px))}
+/* Bottom nav */
+.bottom-nav{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(to top,var(--bg) 65%,transparent);
+  padding:10px 20px;padding-bottom:max(env(safe-area-inset-bottom,16px),16px);
+  display:flex;align-items:center;justify-content:space-around;z-index:100;flex-shrink:0
+}
+.nav-btn{
+  background:none;border:none;color:var(--text3);
+  font-family:var(--fn);font-size:11px;font-weight:600;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:8px 16px;border-radius:12px;transition:color .18s
+}
+.nav-btn.active{color:var(--accent)}
+.nav-icon{font-size:20px}
+.fab{
+  width:56px;height:56px;border-radius:18px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--accent),#9b6cf0);
+  color:#fff;font-size:28px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 28px var(--accent)55;transition:all .18s;transform:translateY(-4px)
+}
+/* Screens */
+.screen{display:none}
+.screen.active{display:block}
+/* Search + chips */
+.search-box{
+  width:100%;background:var(--s1);border:1px solid var(--border);
+  border-radius:12px;padding:10px 14px;color:var(--text);
+  font-family:var(--fn);font-size:14px;outline:none;margin-bottom:10px;
+}
+.search-box:focus{border-color:var(--accent)}
+.search-box::placeholder{color:var(--text3)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;margin-bottom:14px}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  padding:5px 14px;border-radius:20px;border:1px solid var(--border);
+  background:var(--s1);color:var(--text2);cursor:pointer;
+  font-size:12px;font-weight:600;white-space:nowrap;font-family:var(--fn);transition:all .18s
+}
+.chip.active{background:var(--accent)22;border-color:var(--accent);color:var(--accent)}
+/* Cards */
+.grid{display:flex;flex-direction:column;gap:10px}
+.idea-card{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px;cursor:pointer;transition:all .18s
+}
+.idea-card:active{border-color:var(--border2);transform:scale(.99)}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
+.card-title{font-size:15px;font-weight:700;line-height:1.35}
+.card-desc{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-footer{display:flex;align-items:center;justify-content:space-between}
+.card-date{font-size:11px;color:var(--text3)}
+.card-dots{display:flex;align-items:center;gap:8px}
+.ai-dot{width:7px;height:7px;border-radius:50%;background:var(--accent2)}
+.del-btn{background:none;border:none;cursor:pointer;font-size:15px;opacity:.45;padding:4px;border-radius:6px}
+.del-btn:active{opacity:1}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+/* Empty */
+.empty{text-align:center;padding:60px 20px;color:var(--text2)}
+.empty-icon{font-size:40px;margin-bottom:12px}
+.empty-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px}
+/* Form */
+.form-view{display:flex;flex-direction:column;gap:18px}
+.form-title{font-size:22px;font-weight:800;letter-spacing:-.3px}
+.form-sub{font-size:13px;color:var(--text2);margin-top:4px;margin-bottom:4px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field-label{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.input,.textarea{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:12px;padding:13px 15px;color:var(--text);
+  font-family:var(--fn);font-size:15px;outline:none;transition:border .18s;width:100%
+}
+.input:focus,.textarea:focus{border-color:var(--accent)}
+.input::placeholder,.textarea::placeholder{color:var(--text3)}
+.textarea{resize:none;min-height:88px;line-height:1.6}
+.field-error{font-size:12px;color:var(--accent3)}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cat-btn{
+  padding:14px 8px;border-radius:12px;border:1.5px solid var(--border);
+  background:var(--s1);cursor:pointer;text-align:center;
+  font-family:var(--fn);font-size:12px;font-weight:700;color:var(--text2);transition:all .18s
+}
+.cat-btn.sel{background:var(--accent)18;border-color:var(--accent);color:var(--accent)}
+.cat-icon{font-size:24px;display:block;margin-bottom:5px}
+/* Buttons */
+.btn{
+  width:100%;padding:15px;border-radius:13px;border:none;
+  font-family:var(--fn);font-size:15px;font-weight:700;cursor:pointer;
+  transition:all .18s;display:flex;align-items:center;justify-content:center;gap:8px
+}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#9b6cf0);color:#fff;box-shadow:0 6px 24px var(--accent)44}
+.btn-ghost{background:var(--s2);color:var(--text2);border:1px solid var(--border)}
+.btn-outline{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btn-teal{background:var(--accent2)22;color:var(--accent2);border:1px solid var(--accent2)44}
+.btn-danger{background:var(--accent3)18;color:var(--accent3);border:1px solid var(--accent3)33}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-sm{padding:10px 16px;font-size:13px;width:auto;border-radius:10px}
+.btn-row{display:flex;gap:10px;margin-top:16px}
+.btn-row .btn{flex:1}
+/* Detail */
+.back-btn{
+  background:none;border:none;color:var(--accent);
+  font-family:var(--fn);font-size:14px;font-weight:600;cursor:pointer;
+  padding:0;margin-bottom:20px;display:flex;align-items:center;gap:6px
+}
+.detail-title{font-size:23px;font-weight:800;line-height:1.3;margin-bottom:8px;letter-spacing:-.3px}
+.detail-desc{color:var(--text2);font-size:14px;line-height:1.65;margin-bottom:12px}
+.detail-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:4px}
+.ai-card{background:var(--s1);border:1px solid rgba(15,217,160,.18);border-radius:var(--r);padding:16px;margin-top:14px;box-shadow:0 0 20px rgba(15,217,160,.05)}
+.ai-card-title{font-size:12px;font-weight:700;color:var(--accent2);margin-bottom:12px;text-transform:uppercase;letter-spacing:.8px}
+.ai-text{font-size:13px;line-height:1.85;color:#c8d8f0}
+.ai-text h4{color:#e8f4ff;font-size:13px;font-weight:700;margin:12px 0 6px}
+.ai-text li{margin-bottom:3px;padding-inline-start:16px}
+.ai-text p{margin-bottom:3px}
+.no-key-banner{
+  background:var(--accent3)14;border:1px solid var(--accent3)33;
+  border-radius:12px;padding:12px 14px;font-size:13px;color:var(--accent3);
+  margin-top:14px;display:flex;align-items:center;justify-content:space-between;gap:10px
+}
+.analysis-off{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--text2);margin-top:14px}
+/* Chat */
+.chat-card{background:var(--s1);border:1px solid rgba(123,108,240,.2);border-radius:var(--r);margin-top:14px;overflow:hidden;box-shadow:0 0 20px rgba(123,108,240,.05)}
+.chat-hdr{padding:12px 16px;border-bottom:1px solid rgba(15,217,160,.15);font-size:12px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.8px}
+.chat-msgs{padding:12px 14px;display:flex;flex-direction:column;gap:10px;max-height:300px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.bubble{max-width:84%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.6}
+.bubble.user{background:linear-gradient(135deg,var(--accent),#9b6cf0);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;box-shadow:0 2px 12px rgba(123,108,240,.3)}
+.bubble.ai-bubble{background:rgba(15,217,160,.08);color:#b8e8d8;align-self:flex-start;border-bottom-left-radius:4px;border:1px solid rgba(15,217,160,.2)}
+.bubble-label{font-size:10px;font-weight:700;opacity:.6;margin-bottom:3px;letter-spacing:.4px}
+.chat-thinking{align-self:flex-start;color:var(--accent2);font-size:13px;font-style:italic;padding:6px 0;opacity:.7}
+.chat-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border)}
+.chat-input{
+  flex:1;background:var(--s2);border:1px solid var(--border);
+  border-radius:10px;padding:10px 13px;color:var(--text);
+  font-family:var(--fn);font-size:13px;outline:none;
+  resize:none;line-height:1.5;max-height:88px
+}
+.chat-input:focus{border-color:var(--accent2)}
+.chat-input::placeholder{color:var(--text3)}
+.chat-send{
+  background:var(--accent2);color:#08080f;border:none;
+  border-radius:10px;padding:10px 13px;cursor:pointer;
+  font-size:16px;align-self:flex-end;font-weight:700
+}
+.chat-send:disabled{opacity:.35;cursor:not-allowed}
+/* Settings */
+.settings-title{font-size:22px;font-weight:800;letter-spacing:-.3px;margin-bottom:22px}
+.section{background:var(--s1);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;margin-bottom:8px}
+.section-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;padding:16px 16px 6px;margin-top:16px}
+.srow{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);gap:12px}
+.srow:last-child{border-bottom:none}
+.srow-block{padding:14px 16px;border-bottom:1px solid var(--border)}
+.srow-block:last-child{border-bottom:none}
+.slabel{font-size:14px;font-weight:600}
+.sdesc{font-size:12px;color:var(--text2);margin-top:3px}
+.toggle-btn{
+  width:48px;height:28px;border-radius:14px;border:none;cursor:pointer;
+  background:var(--s3);position:relative;transition:background .2s;flex-shrink:0
+}
+.toggle-btn.on{background:var(--accent)}
+.toggle-thumb{
+  position:absolute;top:3px;left:3px;
+  width:22px;height:22px;border-radius:50%;background:#fff;
+  transition:transform .2s;box-shadow:0 1px 4px #0005
+}
+.toggle-btn.on .toggle-thumb{transform:translateX(20px)}
+.lang-toggle{display:flex;gap:6px}
+.lang-opt{
+  padding:6px 14px;border-radius:8px;border:1px solid var(--border);
+  background:var(--s2);color:var(--text2);font-family:var(--fn);font-size:13px;
+  cursor:pointer;font-weight:600;transition:all .18s
+}
+.lang-opt.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.api-key-status{font-size:12px;color:var(--accent2);margin-top:6px}
+.api-help-steps{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.api-step{font-size:13px;color:var(--text2)}
+.api-link{color:var(--accent);text-decoration:none;font-weight:600}
+.mode-option{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);gap:12px;cursor:pointer}
+.mode-option:last-child{border-bottom:none}
+.mode-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s}
+.mode-dot.sel{border-color:var(--accent);background:var(--accent)}
+.mode-dot.sel::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff}
+/* Modal */
+.overlay{position:fixed;inset:0;background:#00000088;z-index:500;display:flex;align-items:center;justify-content:center;padding:24px}
+.modal{background:var(--s2);border-radius:20px;border:1px solid var(--border2);padding:24px;width:100%;max-width:320px}
+.modal h3{font-size:17px;font-weight:700;margin-bottom:10px}
+.modal p{color:var(--text2);font-size:13px;margin-bottom:22px;line-height:1.5}
+.modal-actions{display:flex;gap:10px}
+.modal-actions .btn{flex:1}
+.hidden{display:none!important}
+/* Toast */
+.toast{
+  position:fixed;bottom:calc(88px + env(safe-area-inset-bottom,16px));
+  left:50%;transform:translateX(-50%);
+  background:var(--s3);color:var(--text);border:1px solid var(--border2);
+  padding:10px 20px;border-radius:12px;font-size:13px;font-weight:600;
+  z-index:600;white-space:nowrap;box-shadow:0 8px 24px #0008;
+  opacity:0;transition:opacity .2s;pointer-events:none
+}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Header -->
+  <div class="hdr">
+    <div class="hdr-inner">
+      <div class="logo">
+        <div class="logo-icon">💡</div>
+        <span class="logo-name">IdeaSpark</span>
+      </div>
+      <div class="hdr-btns">
+        <button class="icon-btn hidden" id="warn-btn" title="No API Key" onclick="nav('settings')">⚠️</button>
+        <button class="icon-btn" id="settings-btn" onclick="nav('settings')">⚙️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content" id="content">
+
+    <!-- LIST -->
+    <div class="screen active" id="screen-list">
+      <input class="search-box" id="search-input" placeholder="ابحث..." oninput="renderList()">
+      <div class="chips" id="filter-chips"></div>
+      <div id="ideas-grid"></div>
+    </div>
+
+    <!-- NEW -->
+    <div class="screen" id="screen-new">
+      <div class="form-view">
+        <div>
+          <div class="form-title" id="form-title-txt">✨ فكرة جديدة</div>
+          <div class="form-sub" id="form-sub-txt"></div>
+        </div>
+        <div class="field">
+          <div class="field-label" id="lbl-title">عنوان الفكرة</div>
+          <input class="input" id="idea-title-input" placeholder="اكتب فكرتك...">
+          <span class="field-error hidden" id="title-error"></span>
+        </div>
+        <div class="field">
+          <div class="field-label" id="lbl-desc">تفاصيل</div>
+          <textarea class="textarea" id="idea-desc-input" placeholder="أي تفاصيل إضافية..."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label" id="lbl-cat">نوع الفكرة</div>
+          <div class="cat-grid" id="cat-grid"></div>
+        </div>
+        <div class="field hidden" id="custom-type-field">
+          <div class="field-label" id="lbl-custom">نوع مخصص</div>
+          <input class="input" id="custom-type-input" placeholder="اكتب نوعاً مخصصاً..." list="saved-types-list">
+          <datalist id="saved-types-list"></datalist>
+        </div>
+        <button class="btn btn-primary" id="save-btn" onclick="doSave()">حفظ الفكرة</button>
+        <button class="btn btn-ghost" onclick="nav('list')">إلغاء</button>
+      </div>
+    </div>
+
+    <!-- DETAIL -->
+    <div class="screen" id="screen-detail">
+      <button class="back-btn" onclick="nav('list')"><span id="back-arrow">→</span> <span id="back-txt">رجوع</span></button>
+      <div id="detail-title" class="detail-title"></div>
+      <div id="detail-desc" class="detail-desc hidden"></div>
+      <div class="detail-meta">
+        <span id="detail-badge"></span>
+        <span id="detail-date" class="card-date"></span>
+      </div>
+      <div id="no-key-banner" class="no-key-banner hidden">
+        <span id="no-key-txt"></span>
+        <button class="btn btn-sm btn-ghost" onclick="nav('settings')" id="go-settings-btn">الإعدادات</button>
+      </div>
+      <div id="analysis-off-banner" class="analysis-off hidden"></div>
+      <div class="btn-row" id="ai-btns">
+        <button class="btn btn-outline btn-sm" id="analyze-btn" onclick="triggerAnalysis()"></button>
+        <button class="btn btn-teal btn-sm" id="plan-btn" onclick="triggerPlan()" disabled></button>
+      </div>
+      <div id="ai-analysis-card" class="ai-card hidden">
+        <div class="ai-card-title" id="analysis-card-title">🤖 تحليل الذكاء الاصطناعي</div>
+        <div class="ai-text" id="ai-analysis-text"></div>
+      </div>
+      <div id="chat-section" class="chat-card hidden">
+        <div class="chat-hdr" id="chat-hdr-txt">💬 محادثة</div>
+        <div class="chat-msgs" id="chat-msgs"></div>
+        <div class="chat-input-row">
+          <textarea class="chat-input" id="chat-input" rows="1" placeholder="اكتب ردك..."></textarea>
+          <button class="chat-send" id="chat-send-btn" onclick="sendChat()">➤</button>
+        </div>
+        <div style="padding:8px 12px;border-top:1px solid var(--border);display:flex;justify-content:flex-end">
+          <button class="btn btn-sm btn-outline" id="finish-chat-btn" onclick="finishChat()" style="font-size:12px">✅ إنهاء وحفظ الملخص</button>
+        </div>
+      </div>
+      <div id="chat-summary-card" class="ai-card hidden">
+        <div class="ai-card-title">💡 ملخص المحادثة</div>
+        <div class="ai-text" id="chat-summary-text"></div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-sm btn-outline" onclick="reopenChat()" id="reopen-chat-btn" style="font-size:12px">💬 فتح المحادثة</button>
+        </div>
+      </div>
+      <div id="ai-plan-card" class="ai-card hidden">
+        <div class="ai-card-title" id="plan-card-title">🗺️ خطة التنفيذ</div>
+        <div class="ai-text" id="ai-plan-text"></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="screen" id="screen-settings">
+      <div class="settings-title" id="settings-title-txt">⚙️ الإعدادات</div>
+
+      <div class="section-label" id="lbl-api-section">مفتاح API الشخصي</div>
+      <div class="section">
+        <div class="srow-block">
+          <div class="slabel" id="lbl-api-key">مفتاح Anthropic API</div>
+          <div id="api-key-saved-state" class="hidden">
+            <div class="api-key-status" id="api-status-txt">المفتاح محفوظ على جهازك فقط ✓</div>
+            <button class="btn btn-danger btn-sm" style="margin-top:8px" onclick="clearApiKey()" id="clear-key-btn">حذف المفتاح</button>
+          </div>
+          <div id="api-key-input-state">
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <input class="input" id="api-key-input" type="password" placeholder="AIza..." autocomplete="off"
+                style="flex:1;padding:11px 13px;font-size:13px;font-family:monospace" oninput="document.getElementById('save-key-btn').disabled=!this.value.trim()">
+              <button class="btn btn-primary btn-sm" id="save-key-btn" onclick="saveApiKey()" disabled>حفظ</button>
+            </div>
+          </div>
+        </div>
+        <div class="srow-block">
+          <button onclick="toggleApiHelp()" style="background:none;border:none;color:var(--accent);font-family:var(--fn);font-size:13px;font-weight:600;cursor:pointer;padding:0" id="api-help-btn">كيف أحصل على المفتاح؟ ▼</button>
+          <div class="api-help-steps hidden" id="api-help-content">
+            <div class="api-step" id="step1">1. افتح <a class="api-link" href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a></div>
+            <div class="api-step" id="step2">2. اضغط «Create API Key»</div>
+            <div class="api-step" id="step3">3. انسخ المفتاح (يبدأ بـ AIza)</div>
+            <div class="api-step" id="step4">4. الصقه هنا — مجاني بدون بطاقة ✓</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label" id="lbl-ai-mode">وضع الذكاء الاصطناعي</div>
+      <div class="section">
+        <div class="mode-option" onclick="setAiMode(true)">
+          <div>
+            <div class="slabel" id="mode-auto-label">تحليل تلقائي عند الحفظ</div>
+            <div class="sdesc" id="mode-auto-desc">بعد حفظ الفكرة يبدأ التحليل فوراً</div>
+          </div>
+          <div class="mode-dot" id="mode-auto-dot"></div>
+        </div>
+        <div class="mode-option" onclick="setAiMode(false)">
+          <div>
+            <div class="slabel" id="mode-manual-label">دفتر ملاحظات فقط</div>
+            <div class="sdesc" id="mode-manual-desc">احفظ أفكارك كما هي، التحليل اختياري</div>
+          </div>
+          <div class="mode-dot" id="mode-manual-dot"></div>
+        </div>
+      </div>
+
+      <div class="section-label" id="lbl-lang">اللغة</div>
+      <div class="section">
+        <div class="srow">
+          <div class="slabel" id="lbl-lang2">اللغة</div>
+          <div class="lang-toggle">
+            <button class="lang-opt" id="lang-ar" onclick="setLang('ar')">عربي</button>
+            <button class="lang-opt" id="lang-en" onclick="setLang('en')">EN</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label" id="lbl-country-section">بلدك</div>
+      <div class="section">
+        <div class="srow-block">
+          <div class="sdesc" id="country-desc" style="margin-bottom:8px">يُستخدم لاقتراح موردين محليين</div>
+          <input class="input" id="country-input" placeholder="مثال: الكويت، السعودية..." oninput="saveCountry()">
+        </div>
+      </div>
+
+      <div class="section-label" id="lbl-custom-types">الأنواع المخصصة</div>
+      <div class="section">
+        <div class="srow">
+          <div class="sdesc" id="custom-types-display">—</div>
+          <button class="btn btn-danger btn-sm hidden" id="clear-types-btn" onclick="clearCustomTypes()">مسح الكل</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- Bottom Nav -->
+  <div class="bottom-nav" id="bottom-nav">
+    <button class="nav-btn active" id="nav-list" onclick="nav('list')">
+      <span class="nav-icon">📋</span>
+      <span id="nav-list-txt">أفكاري</span>
+    </button>
+    <button class="fab" onclick="openNew()">+</button>
+    <button class="nav-btn" id="nav-settings" onclick="nav('settings')">
+      <span class="nav-icon">⚙️</span>
+      <span id="nav-settings-txt">الإعدادات</span>
+    </button>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="overlay hidden" id="delete-modal">
+  <div class="modal">
+    <h3>🗑️ <span id="delete-modal-title">حذف هذه الفكرة؟</span></h3>
+    <p id="delete-idea-name"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeDeleteModal()" id="btn-cancel">إلغاء</button>
+      <button class="btn btn-danger" onclick="confirmDelete()" id="btn-delete">حذف</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+const KEYS = { ideas:'ispark_ideas_v3', settings:'ispark_settings_v2', types:'ispark_custom_types', api:'ispark_api_key' };
+
+const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+const persist = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+
+let state = {
+  ideas: load(KEYS.ideas, []),
+  settings: load(KEYS.settings, { lang:'ar', country:'', aiAuto:true }),
+  customTypes: load(KEYS.types, []),
+  apiKey: localStorage.getItem(KEYS.api) || '',
+  currentView: 'list',
+  filter: 'all',
+  search: '',
+  selectedId: null,
+  formCat: 'commercial',
+  deleteTarget: null,
+  aiAnalysis: '',
+  aiPlan: '',
+  chatHistory: [],
+  chatSummary: '',
+  loadingAnalysis: false,
+  loadingPlan: false,
+  loadingChat: false,
+  loadingSummary: false,
+};
+
+// ═══════════════════════════════════════════════════
+// TRANSLATIONS
+// ═══════════════════════════════════════════════════
+const T = {
+  ar: {
+    dir:'rtl', fn:"'Noto Kufi Arabic'",
+    myIdeas:'أفكاري', settings:'الإعدادات', newIdea:'✨ فكرة جديدة',
+    tagline:'أفكارك + ذكاء اصطناعي = مشاريع حقيقية',
+    taglineSimple:'دفتر أفكارك الذكي',
+    search:'ابحث...', all:'الكل', commercial:'تجارية', invention:'اختراع', other:'أخرى',
+    titleLabel:'عنوان الفكرة', titlePH:'اكتب فكرتك...', descLabel:'تفاصيل (اختياري)',
+    descPH:'أي تفاصيل إضافية...', catLabel:'نوع الفكرة', customPH:'اكتب نوعاً مخصصاً...',
+    save:'حفظ الفكرة', cancel:'إلغاء', delete:'حذف', saved:'✓ تم الحفظ',
+    emptyTitle:'اكتب عنوان الفكرة', noIdeas:'لا توجد أفكار بعد', noIdeasSub:'ابدأ بكتابة فكرتك الأولى 🚀',
+    deleteConfirm:'حذف هذه الفكرة؟', back:'رجوع', backArrow:'→',
+    analyze:'✨ حلّل الفكرة', retry:'إعادة التحليل', analyzing:'جارٍ التحليل...',
+    plan:'🗺️ خطة التنفيذ', building:'جارٍ بناء الخطة...',
+    analysisTitle:'تحليل الذكاء الاصطناعي', planTitle:'خطة التنفيذ',
+    chatTitle:'💬 محادثة', chatPH:'اكتب ردك...', chatThinking:'يفكر...',
+    you:'أنت', ai:'الذكاء الاصطناعي',
+    noApiKey:'⚠️ أدخل مفتاح API من الإعدادات أولاً', goSettings:'الإعدادات',
+    analysisOff:'التحليل التلقائي معطّل — يمكنك التحليل يدوياً',
+    apiSection:'مفتاح API الشخصي', apiLabel:'مفتاح Gemini API',
+    apiSave:'حفظ', apiClear:'حذف المفتاح', apiStatus:'المفتاح محفوظ على جهازك فقط ✓',
+    apiHelp:'كيف أحصل على المفتاح؟', apiHelpOpen:'كيف أحصل على المفتاح؟ ▲', apiHelpClose:'كيف أحصل على المفتاح؟ ▼',
+    step1:'1. افتح', step2:'2. اضغط «Create API Key»',
+    step3:'3. انسخ المفتاح (يبدأ بـ AIza)',
+    step4:'4. الصقه هنا — مجاني بدون بطاقة ✓',
+    aiModeLabel:'وضع الذكاء الاصطناعي',
+    modeAutoLabel:'تحليل تلقائي عند الحفظ', modeAutoDesc:'بعد حفظ الفكرة يبدأ التحليل فوراً',
+    modeManualLabel:'دفتر ملاحظات فقط', modeManualDesc:'احفظ أفكارك كما هي، التحليل اختياري',
+    langLabel:'اللغة', countryLabel:'بلدك', countryDesc:'يُستخدم لاقتراح موردين محليين',
+    countryPH:'مثال: الكويت، السعودية...', customTypesLabel:'الأنواع المخصصة',
+    clearAll:'مسح الكل', noneYet:'—',
+    errNoKey:'⚠️ أدخل مفتاح API من الإعدادات أولاً',
+    errTimeout:'❌ انتهت المهلة، حاول مجدداً', errGeneral:'❌ حدث خطأ، حاول مجدداً',
+  },
+  en: {
+    dir:'ltr', fn:"'Plus Jakarta Sans'",
+    myIdeas:'My Ideas', settings:'Settings', newIdea:'✨ New Idea',
+    tagline:'Your Ideas + AI = Real Projects',
+    taglineSimple:'Your Smart Idea Notebook',
+    search:'Search...', all:'All', commercial:'Commercial', invention:'Invention', other:'Other',
+    titleLabel:'Idea Title', titlePH:'Write your idea...', descLabel:'Details (optional)',
+    descPH:'Any additional details...', catLabel:'Idea Type', customPH:'Custom type...',
+    save:'Save Idea', cancel:'Cancel', delete:'Delete', saved:'✓ Saved',
+    emptyTitle:'Idea title is required', noIdeas:'No ideas yet', noIdeasSub:'Start with your first idea 🚀',
+    deleteConfirm:'Delete this idea?', back:'Back', backArrow:'←',
+    analyze:'✨ Analyze Idea', retry:'Retry Analysis', analyzing:'Analyzing...',
+    plan:'🗺️ Execution Plan', building:'Building plan...',
+    analysisTitle:'AI Analysis', planTitle:'Execution Plan',
+    chatTitle:'💬 Chat', chatPH:'Type your reply...', chatThinking:'Thinking...',
+    you:'You', ai:'AI',
+    noApiKey:'⚠️ Add your API key in Settings first', goSettings:'Settings',
+    analysisOff:'Auto-analysis is off — you can still analyze manually',
+    apiSection:'Personal API Key', apiLabel:'Gemini API Key',
+    apiSave:'Save', apiClear:'Remove Key', apiStatus:'Key stored on your device only ✓',
+    apiHelp:'How to get a key?', apiHelpOpen:'How to get a key? ▲', apiHelpClose:'How to get a key? ▼',
+    step1:'1. Go to', step2:'2. Click «Create API Key»',
+    step3:'3. Copy the key (starts with AIza)',
+    step4:'4. Paste it here — free, no card needed ✓',
+    aiModeLabel:'AI Mode',
+    modeAutoLabel:'Auto-analyze on save', modeAutoDesc:'Analysis starts immediately after saving',
+    modeManualLabel:'Notebook only', modeManualDesc:'Save ideas as-is, analysis is optional',
+    langLabel:'Language', countryLabel:'Your Country', countryDesc:'Used to suggest local suppliers',
+    countryPH:'e.g. Kuwait, Saudi Arabia...', customTypesLabel:'Custom Types',
+    clearAll:'Clear All', noneYet:'—',
+    errNoKey:'⚠️ Add your API key in Settings first',
+    errTimeout:'❌ Timed out, try again', errGeneral:'❌ Error, please try again',
+  }
+};
+const t = () => T[state.settings.lang] || T.ar;
+
+// ═══════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+const show = id => $(id)?.classList.remove('hidden');
+const hide = id => $(id)?.classList.add('hidden');
+const setText = (id, txt) => { if($(id)) $(id).textContent = txt; };
+
+function showToast(msg) {
+  const el = $('toast'); el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+function fmtDate(iso) {
+  return new Date(iso).toLocaleDateString(
+    state.settings.lang === 'ar' ? 'ar-KW' : 'en-GB',
+    { year:'numeric', month:'short', day:'numeric' }
+  );
+}
+
+const CAT = {
+  commercial: { icon:'💼', color:'#10b981' },
+  invention:  { icon:'💡', color:'#6366f1' },
+  other:      { icon:'✏️', color:'#f59e0b' },
+};
+
+function badgeHTML(cat) {
+  const m = CAT[cat] || { icon:'✏️', color:'#94a3b8' };
+  return `<span class="badge" style="background:${m.color}22;color:${m.color};border:1px solid ${m.color}44">${m.icon} ${cat}</span>`;
+}
+
+function formatAI(text) {
+  if (!text) return '';
+  return text.split('\n').map(line => {
+    if (/^\*\*.*\*\*$/.test(line.trim())) return `<h4>${line.replace(/\*\*/g,'')}</h4>`;
+    if (/\*\*(.*?)\*\*/.test(line)) return `<p>${line.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p>`;
+    if (/^[•\-]/.test(line)) return `<li>${line.replace(/^[•\-]\s*/,'')}</li>`;
+    if (/^\d+\./.test(line)) return `<li>${line}</li>`;
+    if (!line.trim()) return '<br>';
+    return `<p>${line}</p>`;
+  }).join('');
+}
+
+function errMsg(e) {
+  const tr = t();
+  if (e.message === 'no_api_key') return tr.errNoKey;
+  if (e.message === 'timeout') return tr.errTimeout;
+  return tr.errGeneral;
+}
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+function nav(view) {
+  ['list','new','detail','settings'].forEach(v => {
+    $(`screen-${v}`)?.classList.remove('active');
+    $(`nav-${v}`)?.classList.remove('active');
+  });
+  $(`screen-${view}`)?.classList.add('active');
+  $(`nav-${view}`)?.classList.add('active');
+  state.currentView = view;
+  $('content').scrollTop = 0;
+
+  const showNav = view === 'list' || view === 'settings';
+  $('bottom-nav').style.display = showNav ? 'flex' : 'none';
+
+  applyLang();
+  if (view === 'list') renderList();
+  if (view === 'settings') renderSettings();
+}
+
+// ═══════════════════════════════════════════════════
+// LANGUAGE
+// ═══════════════════════════════════════════════════
+function applyLang() {
+  const tr = t();
+  document.documentElement.lang = state.settings.lang;
+  document.documentElement.dir = tr.dir;
+  document.body.style.fontFamily = `${tr.fn}, sans-serif`;
+
+  // Header / nav
+  setText('nav-list-txt', tr.myIdeas);
+  setText('nav-settings-txt', tr.settings);
+  $('warn-btn') && (state.apiKey ? hide('warn-btn') : show('warn-btn'));
+  $('settings-btn').classList.toggle('active', state.currentView === 'settings');
+
+  // Form
+  setText('form-title-txt', tr.newIdea);
+  setText('form-sub-txt', state.settings.aiAuto && state.apiKey ? tr.tagline : tr.taglineSimple);
+  setText('lbl-title', tr.titleLabel); $('idea-title-input').placeholder = tr.titlePH;
+  setText('lbl-desc', tr.descLabel); $('idea-desc-input').placeholder = tr.descPH;
+  setText('lbl-cat', tr.catLabel);
+  setText('lbl-custom', tr.customPH); $('custom-type-input').placeholder = tr.customPH;
+  setText('save-btn', tr.save);
+  setText('back-arrow', tr.backArrow); setText('back-txt', tr.back);
+  $('chat-input').placeholder = tr.chatPH;
+
+  // Detail AI btn labels
+  const analyzing = state.loadingAnalysis;
+  const hasAnalysis = state.aiAnalysis && !state.aiAnalysis.startsWith('❌') && !state.aiAnalysis.startsWith('⚠️');
+  setText('analyze-btn', analyzing ? tr.analyzing : (state.aiAnalysis ? tr.retry : tr.analyze));
+  setText('plan-btn', state.loadingPlan ? tr.building : tr.plan);
+  setText('analysis-card-title', '🤖 ' + tr.analysisTitle);
+  setText('plan-card-title', '🗺️ ' + tr.planTitle);
+  setText('chat-hdr-txt', tr.chatTitle);
+  setText('no-key-txt', tr.noApiKey);
+  setText('go-settings-btn', tr.goSettings);
+  setText('analysis-off-banner', tr.analysisOff);
+
+  // Settings labels
+  setText('settings-title-txt', '⚙️ ' + tr.settings);
+  setText('lbl-api-section', tr.apiSection);
+  setText('lbl-api-key', tr.apiLabel);
+  setText('save-key-btn', tr.apiSave);
+  setText('clear-key-btn', tr.apiClear);
+  setText('api-status-txt', tr.apiStatus);
+  setText('lbl-ai-mode', tr.aiModeLabel);
+  setText('mode-auto-label', tr.modeAutoLabel); setText('mode-auto-desc', tr.modeAutoDesc);
+  setText('mode-manual-label', tr.modeManualLabel); setText('mode-manual-desc', tr.modeManualDesc);
+  setText('lbl-lang', tr.langLabel); setText('lbl-lang2', tr.langLabel);
+  setText('lbl-country-section', tr.countryLabel);
+  setText('country-desc', tr.countryDesc); $('country-input').placeholder = tr.countryPH;
+  setText('lbl-custom-types', tr.customTypesLabel);
+  setText('clear-types-btn', tr.clearAll);
+  setText('step2', tr.step2); setText('step3', tr.step3); setText('step4', tr.step4);
+  // step1 has a link — handle separately
+  $('step1').innerHTML = `${tr.step1} <a class="api-link" href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a>`;
+
+  // Modal
+  setText('delete-modal-title', tr.deleteConfirm);
+  setText('btn-cancel', tr.cancel); setText('btn-delete', tr.delete);
+  $('search-input').placeholder = tr.search;
+}
+
+// ═══════════════════════════════════════════════════
+// LIST
+// ═══════════════════════════════════════════════════
+function renderList() {
+  const tr = t();
+  // Filter chips
+  const chips = $('filter-chips');
+  const filters = [
+    { val:'all', label: tr.all },
+    { val:'commercial', label:'💼 ' + tr.commercial },
+    { val:'invention', label:'💡 ' + tr.invention },
+    { val:'other', label:'✏️ ' + tr.other },
+  ];
+  chips.innerHTML = filters.map(f =>
+    `<button class="chip${state.filter===f.val?' active':''}" onclick="setFilter('${f.val}')">${f.label}</button>`
+  ).join('');
+
+  const q = state.search.toLowerCase();
+  const filtered = state.ideas.filter(i => {
+    const mf = state.filter==='all' || i.category===state.filter ||
+      (state.filter==='other' && i.category!=='commercial' && i.category!=='invention');
+    return mf && (i.title.toLowerCase().includes(q) || i.description.toLowerCase().includes(q));
+  });
+
+  const grid = $('ideas-grid');
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty"><div class="empty-icon">💡</div><div class="empty-title">${tr.noIdeas}</div><div class="empty-sub">${tr.noIdeasSub}</div></div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map(idea => `
+    <div class="idea-card" onclick="openIdea('${idea.id}')">
+      <div class="card-top">
+        <div class="card-title">${escHtml(idea.title)}</div>
+        <button class="del-btn" onclick="event.stopPropagation();openDeleteModal('${idea.id}')">🗑️</button>
+      </div>
+      ${idea.description ? `<div class="card-desc">${escHtml(idea.description)}</div>` : ''}
+      <div class="card-footer">
+        ${badgeHTML(idea.category)}
+        <div class="card-dots">
+          ${idea.analysis && !idea.analysis.startsWith('❌') ? '<div class="ai-dot"></div>' : ''}
+          <span class="card-date">${fmtDate(idea.createdAt)}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function setFilter(f) { state.filter = f; renderList(); }
+$('search-input').addEventListener('input', e => { state.search = e.target.value; renderList(); });
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════════════
+// NEW IDEA FORM
+// ═══════════════════════════════════════════════════
+let formCat = 'commercial';
+
+function openNew() {
+  formCat = 'commercial';
+  $('idea-title-input').value = '';
+  $('idea-desc-input').value = '';
+  $('custom-type-input').value = '';
+  hide('title-error'); hide('custom-type-field');
+  renderCatGrid();
+  renderSavedTypes();
+  nav('new');
+}
+
+function renderCatGrid() {
+  const tr = t();
+  const cats = [
+    { val:'commercial', icon:'💼', label:tr.commercial },
+    { val:'invention', icon:'💡', label:tr.invention },
+    { val:'other', icon:'✏️', label:tr.other },
+  ];
+  $('cat-grid').innerHTML = cats.map(c => `
+    <button class="cat-btn${formCat===c.val?' sel':''}" onclick="selectCat('${c.val}')">
+      <span class="cat-icon">${c.icon}</span>${c.label}
+    </button>
+  `).join('');
+}
+
+function selectCat(cat) {
+  formCat = cat;
+  renderCatGrid();
+  cat === 'other' ? show('custom-type-field') : hide('custom-type-field');
+}
+
+function renderSavedTypes() {
+  $('saved-types-list').innerHTML = state.customTypes.map(t => `<option value="${escHtml(t)}">`).join('');
+}
+
+function doSave() {
+  const tr = t();
+  const title = $('idea-title-input').value.trim();
+  if (!title) { $('title-error').textContent = tr.emptyTitle; show('title-error'); return; }
+  hide('title-error');
+
+  const customType = $('custom-type-input').value.trim();
+  const finalCat = formCat === 'other' && customType ? customType : formCat;
+  if (formCat === 'other' && customType && !state.customTypes.includes(customType)) {
+    state.customTypes.push(customType);
+    persist(KEYS.types, state.customTypes);
+  }
+
+  const idea = {
+    id: Date.now().toString(),
+    title, description: $('idea-desc-input').value.trim(),
+    category: finalCat, createdAt: new Date().toISOString(),
+    analysis:'', plan:'', chatHistory:[], chatSummary:'',
+  };
+  state.ideas.unshift(idea);
+  persist(KEYS.ideas, state.ideas);
+  showToast(tr.saved);
+  openIdea(idea.id);
+  if (state.settings.aiAuto && state.apiKey) setTimeout(() => triggerAnalysis(), 100);
+}
+
+// ═══════════════════════════════════════════════════
+// DETAIL
+// ═══════════════════════════════════════════════════
+function openIdea(id) {
+  const idea = state.ideas.find(i => i.id === id);
+  if (!idea) return;
+  state.selectedId = id;
+  state.aiAnalysis = idea.analysis || '';
+  state.aiPlan = idea.plan || '';
+  state.chatHistory = idea.chatHistory || [];
+  state.chatSummary = idea.chatSummary || '';
+  state.loadingAnalysis = false;
+  state.loadingPlan = false;
+  state.loadingChat = false;
+  state.loadingSummary = false;
+
+  $('detail-title').textContent = idea.title;
+  if (idea.description) { $('detail-desc').textContent = idea.description; show('detail-desc'); }
+  else hide('detail-desc');
+  $('detail-badge').innerHTML = badgeHTML(idea.category);
+  $('detail-date').textContent = fmtDate(idea.createdAt);
+
+  renderDetailAI();
+  renderChat();
+  nav('detail');
+}
+
+function renderDetailAI() {
+  const tr = t();
+  const hasKey = !!state.apiKey;
+  const hasAnalysis = state.aiAnalysis && !state.aiAnalysis.startsWith('❌') && !state.aiAnalysis.startsWith('⚠️');
+
+  // banners
+  if (!hasKey) { show('no-key-banner'); hide('analysis-off-banner'); hide('ai-btns'); }
+  else {
+    hide('no-key-banner');
+    if (!state.settings.aiAuto && !state.aiAnalysis) show('analysis-off-banner');
+    else hide('analysis-off-banner');
+    show('ai-btns');
+  }
+
+  // buttons
+  setText('analyze-btn', state.loadingAnalysis ? tr.analyzing : (state.aiAnalysis ? tr.retry : tr.analyze));
+  $('analyze-btn').disabled = state.loadingAnalysis;
+  $('plan-btn').disabled = state.loadingPlan || !hasAnalysis;
+  setText('plan-btn', state.loadingPlan ? tr.building : tr.plan);
+
+  // analysis card
+  if (state.aiAnalysis) {
+    $('ai-analysis-text').innerHTML = formatAI(state.aiAnalysis);
+    show('ai-analysis-card');
+  } else hide('ai-analysis-card');
+
+  // chat & summary
+  if (hasAnalysis && !state.loadingAnalysis) {
+    if (state.chatSummary) {
+      hide('chat-section');
+      $('chat-summary-text').innerHTML = formatAI(state.chatSummary);
+      show('chat-summary-card');
+    } else {
+      show('chat-section');
+      hide('chat-summary-card');
+    }
+  } else {
+    hide('chat-section');
+    hide('chat-summary-card');
+  }
+  // finish chat button visibility
+  const finishBtn = $('finish-chat-btn');
+  if (finishBtn) finishBtn.style.display = state.chatHistory.length >= 2 ? '' : 'none';
+
+  // plan
+  if (state.aiPlan) {
+    $('ai-plan-text').innerHTML = formatAI(state.aiPlan);
+    show('ai-plan-card');
+  } else hide('ai-plan-card');
+}
+
+function renderChat() {
+  const tr = t();
+  const msgs = $('chat-msgs');
+  msgs.innerHTML = state.chatHistory.map(m => `
+    <div class="bubble ${m.role === 'user' ? 'user' : 'ai-bubble'}">
+      <div class="bubble-label">${m.role === 'user' ? tr.you : tr.ai}</div>
+      ${escHtml(m.text)}
+    </div>
+  `).join('');
+  if (state.loadingChat) {
+    msgs.innerHTML += `<div class="chat-thinking">⏳ ${tr.chatThinking}</div>`;
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ═══════════════════════════════════════════════════
+// CLAUDE API
+// ═══════════════════════════════════════════════════
+async function callClaude(messages, system) {
+  if (!state.apiKey) throw new Error('no_api_key');
+  const controller = new AbortController();
+  const tid = setTimeout(() => controller.abort(), 60000);
+
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    signal: controller.signal,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${state.apiKey}`,
+      'HTTP-Referer': 'https://idea-spark.app',
+      'X-Title': 'Idea Spark'
+    },
+    body: JSON.stringify({
+      model: 'google/gemini-2.0-flash-001',
+      max_tokens: 1200,
+      messages: system
+        ? [{ role: 'system', content: system }, ...messages]
+        : messages
+    }),
+  });
+  clearTimeout(tid);
+  if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e?.error?.message || 'HTTP ' + res.status); }
+  const data = await res.json();
+  const text = data.choices?.[0]?.message?.content || '';
+  if (!text) throw new Error('empty_response');
+  return text;
+}
+
+async function triggerAnalysis() {
+  const idea = state.ideas.find(i => i.id === state.selectedId);
+  if (!idea) return;
+  const tr = t();
+  state.loadingAnalysis = true; state.aiAnalysis = ''; state.chatHistory = []; state.chatSummary = '';
+  renderDetailAI(); renderChat();
+
+  // pulse
+  let dots = 0;
+  const pulse = setInterval(() => {
+    dots = (dots%3)+1;
+    $('ai-analysis-text').innerHTML = `⏳ ${tr.analyzing.replace('...','')}`+'.'.repeat(dots);
+    show('ai-analysis-card');
+  }, 500);
+
+  const isAr = state.settings.lang === 'ar';
+  const system = isAr
+    ? 'أنت مستشار أعمال وابتكار خبير. ردودك مختصرة وعملية. اكتب بالعربية.'
+    : 'You are an expert business and innovation advisor. Be concise and practical.';
+  const content = isAr
+    ? `فكرة: "${idea.title}"\nالنوع: ${idea.category}\nالتفاصيل: ${idea.description||'لا يوجد'}\n\nاسأل 3 أسئلة مختصرة تساعد على فهم الفكرة أعمق، ثم أعطِ 3 مقترحات تطوير سريعة.\n\n**أسئلة:**\n1. ...\n2. ...\n3. ...\n\n**مقترحات تطوير:**\n• ...\n• ...\n• ...`
+    : `Idea: "${idea.title}"\nType: ${idea.category}\nDetails: ${idea.description||'None'}\n\nAsk 3 short questions to understand the idea better, then give 3 quick development suggestions.\n\n**Questions:**\n1. ...\n2. ...\n3. ...\n\n**Development Suggestions:**\n• ...\n• ...\n• ...`;
+
+  try {
+    const text = await callClaude([{ role:'user', content }], system);
+    clearInterval(pulse);
+    state.aiAnalysis = text;
+    state.ideas = state.ideas.map(i => i.id === idea.id ? {...i, analysis:text} : i);
+    persist(KEYS.ideas, state.ideas);
+  } catch(e) {
+    clearInterval(pulse);
+    state.aiAnalysis = errMsg(e);
+  }
+  state.loadingAnalysis = false;
+  renderDetailAI();
+}
+
+async function triggerPlan() {
+  const idea = state.ideas.find(i => i.id === state.selectedId);
+  if (!idea) return;
+  const tr = t();
+  state.loadingPlan = true; state.aiPlan = '';
+  renderDetailAI();
+
+  let dots = 0;
+  const pulse = setInterval(() => {
+    dots = (dots%3)+1;
+    $('ai-plan-text').innerHTML = `⏳ ${tr.building.replace('...','')}`+'.'.repeat(dots);
+    show('ai-plan-card');
+  }, 500);
+
+  const isAr = state.settings.lang === 'ar';
+  const country = state.settings.country || (isAr ? 'الكويت' : 'Kuwait');
+  const system = isAr
+    ? 'أنت مستشار تنفيذي خبير في ريادة الأعمال. ردودك عملية ومفصلة مع أسعار تقريبية. اكتب بالعربية.'
+    : 'You are an executive consultant expert in startups. Be practical and detailed with approximate prices.';
+  const content = isAr
+    ? `فكرة: "${idea.title}"\nالنوع: ${idea.category}\nالبلد: ${country}\n\n**1. مراحل التنفيذ:** (المرحلة، الوقت، التكلفة)\n**2. الأدوات والمواد:** (مع سعر تقريبي)\n**3. موردون محليون:** (محلات، مواقع)\n**4. موردون دوليون:** (AliExpress/Alibaba/Amazon)\n**5. خطوة البداية الفورية:** (شيء واحد اليوم)`
+    : `Idea: "${idea.title}"\nType: ${idea.category}\nCountry: ${country}\n\n**1. Execution Phases:** (phase, timeline, cost)\n**2. Required Tools & Materials:** (with prices)\n**3. Local Suppliers:** (shops, websites)\n**4. International Suppliers:** (AliExpress/Alibaba/Amazon)\n**5. Immediate First Step:** (one thing to do today)`;
+
+  try {
+    const text = await callClaude([{ role:'user', content }], system);
+    clearInterval(pulse);
+    state.aiPlan = text;
+    state.ideas = state.ideas.map(i => i.id === idea.id ? {...i, plan:text} : i);
+    persist(KEYS.ideas, state.ideas);
+  } catch(e) {
+    clearInterval(pulse);
+    state.aiPlan = errMsg(e);
+  }
+  state.loadingPlan = false;
+  renderDetailAI();
+}
+
+async function finishChat() {
+  const idea = state.ideas.find(i => i.id === state.selectedId);
+  if (!idea || state.chatHistory.length < 2) return;
+  const isAr = state.settings.lang === 'ar';
+  const finishBtn = $('finish-chat-btn');
+  if (finishBtn) { finishBtn.disabled = true; finishBtn.textContent = isAr ? '⏳ جاري الحفظ...' : '⏳ Saving...'; }
+
+  const system = isAr
+    ? 'أنت مساعد ملخص. اكتب بالعربية.'
+    : 'You are a summarizer assistant.';
+
+  const chatText = state.chatHistory.map(m =>
+    (m.role === 'user' ? (isAr ? 'المستخدم: ' : 'User: ') : (isAr ? 'المستشار: ' : 'Advisor: ')) + m.text
+  ).join('\n');
+
+  const prompt = isAr
+    ? `بناءً على هذه المحادثة حول الفكرة "${idea.title}":\n\n${chatText}\n\nاكتب ملخصاً موجزاً في نقاط تشمل:\n• أبرز ما كشفته المحادثة عن الفكرة\n• المقترحات النهائية\n• الخطوة التالية الموصى بها`
+    : `Based on this conversation about "${idea.title}":\n\n${chatText}\n\nWrite a brief bullet-point summary covering:\n• Key insights from the conversation\n• Final suggestions\n• Recommended next step`;
+
+  let summary;
+  try {
+    summary = await callClaude([{ role: 'user', content: prompt }], system);
+  } catch(e) {
+    summary = errMsg(e);
+  }
+
+  state.chatSummary = summary;
+  state.ideas = state.ideas.map(i => i.id === idea.id ? {...i, chatSummary: summary} : i);
+  persist(KEYS.ideas, state.ideas);
+  if (finishBtn) { finishBtn.disabled = false; finishBtn.textContent = isAr ? '✅ إنهاء وحفظ الملخص' : '✅ Finish & Save Summary'; }
+  renderDetailAI();
+}
+
+function reopenChat() {
+  const idea = state.ideas.find(i => i.id === state.selectedId);
+  if (!idea) return;
+  state.chatSummary = '';
+  state.ideas = state.ideas.map(i => i.id === idea.id ? {...i, chatSummary: ''} : i);
+  persist(KEYS.ideas, state.ideas);
+  renderDetailAI();
+}
+
+async function sendChat() {
+  const msg = $('chat-input').value.trim();
+  if (!msg || state.loadingChat) return;
+  const idea = state.ideas.find(i => i.id === state.selectedId);
+  if (!idea || !state.aiAnalysis) return;
+  $('chat-input').value = '';
+  state.chatHistory.push({ role:'user', text:msg });
+  state.loadingChat = true;
+  renderChat();
+
+  const isAr = state.settings.lang === 'ar';
+  const system = isAr
+    ? 'أنت مستشار أعمال وابتكار. أنت في محادثة مع صاحب الفكرة. أجب بشكل مختصر وعملي. اكتب بالعربية.'
+    : 'You are a business and innovation advisor in a conversation with an idea owner. Be concise and practical.';
+  const history = [
+    { role:'user', content: isAr ? `فكرتي: "${idea.title}"` : `My idea: "${idea.title}"` },
+    { role:'assistant', content: state.aiAnalysis },
+    ...state.chatHistory.slice(0,-1).map(m => ({ role: m.role==='user'?'user':'assistant', content:m.text })),
+    { role:'user', content:msg },
+  ];
+
+  let reply;
+  try { reply = await callClaude(history, system); }
+  catch(e) { reply = errMsg(e); }
+
+  state.chatHistory.push({ role:'assistant', text:reply });
+  state.loadingChat = false;
+  state.ideas = state.ideas.map(i => i.id === idea.id ? {...i, chatHistory:[...state.chatHistory]} : i);
+  persist(KEYS.ideas, state.ideas);
+  renderChat();
+}
+
+$('chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+});
+
+// ═══════════════════════════════════════════════════
+// DELETE
+// ═══════════════════════════════════════════════════
+function openDeleteModal(id) {
+  state.deleteTarget = id;
+  const idea = state.ideas.find(i => i.id === id);
+  $('delete-idea-name').textContent = idea?.title || '';
+  show('delete-modal');
+}
+function closeDeleteModal() { hide('delete-modal'); state.deleteTarget = null; }
+function confirmDelete() {
+  state.ideas = state.ideas.filter(i => i.id !== state.deleteTarget);
+  persist(KEYS.ideas, state.ideas);
+  closeDeleteModal();
+  if (state.selectedId === state.deleteTarget) nav('list');
+  else renderList();
+}
+
+// ═══════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════
+function renderSettings() {
+  // API key state
+  if (state.apiKey) { show('api-key-saved-state'); hide('api-key-input-state'); }
+  else { hide('api-key-saved-state'); show('api-key-input-state'); }
+  $('api-key-input').value = '';
+  $('save-key-btn').disabled = true;
+
+  // AI mode dots
+  $('mode-auto-dot').className = 'mode-dot' + (state.settings.aiAuto ? ' sel' : '');
+  $('mode-manual-dot').className = 'mode-dot' + (!state.settings.aiAuto ? ' sel' : '');
+
+  // Lang buttons
+  $('lang-ar').className = 'lang-opt' + (state.settings.lang==='ar' ? ' active' : '');
+  $('lang-en').className = 'lang-opt' + (state.settings.lang==='en' ? ' active' : '');
+
+  // Country
+  $('country-input').value = state.settings.country;
+
+  // Custom types
+  if (state.customTypes.length) {
+    $('custom-types-display').textContent = state.customTypes.join(' · ');
+    show('clear-types-btn');
+  } else {
+    $('custom-types-display').textContent = t().noneYet;
+    hide('clear-types-btn');
+  }
+}
+
+function saveApiKey() {
+  const k = $('api-key-input').value.trim();
+  if (!k) return;
+  localStorage.setItem(KEYS.api, k);
+  state.apiKey = k;
+  renderSettings();
+  showToast(t().saved);
+}
+function clearApiKey() {
+  localStorage.removeItem(KEYS.api);
+  state.apiKey = '';
+  renderSettings();
+}
+let apiHelpOpen = false;
+function toggleApiHelp() {
+  apiHelpOpen = !apiHelpOpen;
+  apiHelpOpen ? show('api-help-content') : hide('api-help-content');
+  $('api-help-btn').textContent = apiHelpOpen ? t().apiHelpOpen : t().apiHelpClose;
+}
+function setAiMode(auto) {
+  state.settings.aiAuto = auto;
+  persist(KEYS.settings, state.settings);
+  $('mode-auto-dot').className = 'mode-dot' + (auto ? ' sel' : '');
+  $('mode-manual-dot').className = 'mode-dot' + (!auto ? ' sel' : '');
+}
+function setLang(lang) {
+  state.settings.lang = lang;
+  persist(KEYS.settings, state.settings);
+  $('lang-ar').className = 'lang-opt' + (lang==='ar' ? ' active' : '');
+  $('lang-en').className = 'lang-opt' + (lang==='en' ? ' active' : '');
+  applyLang();
+  renderSettings();
+}
+function saveCountry() {
+  state.settings.country = $('country-input').value;
+  persist(KEYS.settings, state.settings);
+}
+function clearCustomTypes() {
+  state.customTypes = [];
+  persist(KEYS.types, state.customTypes);
+  renderSettings();
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
+nav('list');
+applyLang();
+</script>
+</body>
+</html>
