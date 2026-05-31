@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>IdeaSpark</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -22,7 +22,8 @@
   --r:16px;--fn:'Plus Jakarta Sans',sans-serif;
 }
 html,body{height:100%;background:var(--bg);color:var(--text);overflow:hidden}
-body{font-family:var(--fn)}
+html[dir='rtl'] *{font-family:Arial,sans-serif!important;font-weight:700!important}
+body{font-family:var(--fn)} :lang(ar) body, html[lang='ar'] body, html[dir='rtl'] body{font-weight:700}
 .app{
   max-width:430px;height:100vh;height:100dvh;
   margin:0 auto;background:var(--bg);
@@ -119,6 +120,13 @@ body{font-family:var(--fn)}
 .del-btn{background:none;border:none;cursor:pointer;font-size:15px;opacity:.45;padding:4px;border-radius:6px}
 .del-btn:active{opacity:1}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.status-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s}
+.status-idea{background:rgba(123,108,240,.15);color:#a99ef5;border:1px solid rgba(123,108,240,.3)}
+.status-wip{background:rgba(255,165,0,.12);color:#ffb347;border:1px solid rgba(255,165,0,.3)}
+.status-done{background:rgba(15,217,160,.12);color:#0fd9a0;border:1px solid rgba(15,217,160,.3)}
+.sort-btn{background:none;border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-size:12px;padding:5px 10px;cursor:pointer;font-family:var(--fn)}
+.sort-btn:hover{border-color:var(--accent2);color:var(--accent2)}
+.list-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
 /* Empty */
 .empty{text-align:center;padding:60px 20px;color:var(--text2)}
 .empty-icon{font-size:40px;margin-bottom:12px}
@@ -167,7 +175,7 @@ body{font-family:var(--fn)}
   font-family:var(--fn);font-size:14px;font-weight:600;cursor:pointer;
   padding:0;margin-bottom:20px;display:flex;align-items:center;gap:6px
 }
-.detail-title{font-size:23px;font-weight:800;line-height:1.3;margin-bottom:8px;letter-spacing:-.3px}
+.detail-title{font-size:23px;font-weight:800;line-height:1.3;margin-bottom:8px;letter-spacing:-.3px;word-break:break-word;white-space:normal}
 .detail-desc{color:var(--text2);font-size:14px;line-height:1.65;margin-bottom:12px}
 .detail-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:4px}
 .ai-card{background:var(--s1);border:1px solid rgba(15,217,160,.18);border-radius:var(--r);padding:16px;margin-top:14px;box-shadow:0 0 20px rgba(15,217,160,.05)}
@@ -285,7 +293,10 @@ body{font-family:var(--fn)}
     <!-- LIST -->
     <div class="screen active" id="screen-list">
       <input class="search-box" id="search-input" placeholder="ابحث..." oninput="renderList()">
-      <div class="chips" id="filter-chips"></div>
+      <div class="list-toolbar">
+        <div class="chips" id="filter-chips" style="margin-bottom:0;flex:1"></div>
+        <button class="sort-btn" id="sort-btn" onclick="toggleSort()">⇅ <span id="sort-btn-txt">الأحدث</span></button>
+      </div>
       <div id="ideas-grid"></div>
     </div>
 
@@ -298,7 +309,7 @@ body{font-family:var(--fn)}
         </div>
         <div class="field">
           <div class="field-label" id="lbl-title">عنوان الفكرة</div>
-          <input class="input" id="idea-title-input" placeholder="اكتب فكرتك...">
+          <textarea class="input" id="idea-title-input" placeholder="اكتب فكرتك..." rows="1" style="resize:none;overflow:hidden;line-height:1.5;min-height:44px"></textarea>
           <span class="field-error hidden" id="title-error"></span>
         </div>
         <div class="field">
@@ -321,12 +332,21 @@ body{font-family:var(--fn)}
 
     <!-- DETAIL -->
     <div class="screen" id="screen-detail">
-      <button class="back-btn" onclick="nav('list')"><span id="back-arrow">→</span> <span id="back-txt">رجوع</span></button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <button class="back-btn" onclick="nav('list')" style="margin-bottom:0"><span id="back-arrow">→</span> <span id="back-txt">رجوع</span></button>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="shareIdea()" id="share-idea-btn" style="font-size:13px;padding:6px 10px">📤</button>
+          <button class="btn btn-ghost btn-sm" onclick="openEditModal()" id="edit-idea-btn" style="font-size:13px;padding:6px 12px">✏️ <span id="edit-btn-txt">تعديل</span></button>
+        </div>
+      </div>
       <div id="detail-title" class="detail-title"></div>
       <div id="detail-desc" class="detail-desc hidden"></div>
       <div class="detail-meta">
         <span id="detail-badge"></span>
         <span id="detail-date" class="card-date"></span>
+      </div>
+      <div style="margin:10px 0 4px">
+        <button class="status-pill status-idea" id="status-pill" onclick="cycleStatus()">💡 <span id="status-pill-txt">فكرة</span></button>
       </div>
       <div id="no-key-banner" class="no-key-banner hidden">
         <span id="no-key-txt"></span>
@@ -349,7 +369,7 @@ body{font-family:var(--fn)}
           <button class="chat-send" id="chat-send-btn" onclick="sendChat()">➤</button>
         </div>
         <div style="padding:8px 12px;border-top:1px solid var(--border);display:flex;justify-content:flex-end">
-          <button class="btn btn-sm btn-outline" id="finish-chat-btn" onclick="finishChat()" style="font-size:12px">✅ إنهاء وحفظ الملخص</button>
+          <button class="btn btn-sm btn-outline" id="finish-chat-btn" onclick="finishChat()" style="font-size:12px">✅ إنهاء وتحديث التحليل</button>
         </div>
       </div>
       <div id="chat-summary-card" class="ai-card hidden">
@@ -362,6 +382,25 @@ body{font-family:var(--fn)}
       <div id="ai-plan-card" class="ai-card hidden">
         <div class="ai-card-title" id="plan-card-title">🗺️ خطة التنفيذ</div>
         <div class="ai-text" id="ai-plan-text"></div>
+      </div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div class="modal-overlay hidden" id="edit-modal">
+      <div class="modal-box">
+        <div class="modal-title" id="edit-modal-title">✏️ تعديل الفكرة</div>
+        <div style="margin-bottom:10px">
+          <label class="settings-label" id="edit-lbl-title">العنوان</label>
+          <textarea class="input" id="edit-title-input" placeholder="اكتب فكرتك..." rows="1" style="resize:none;overflow:hidden;line-height:1.5;min-height:44px"></textarea>
+        </div>
+        <div style="margin-bottom:16px">
+          <label class="settings-label" id="edit-lbl-desc">التفاصيل</label>
+          <textarea class="textarea" id="edit-desc-input" placeholder="أي تفاصيل إضافية..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost btn-sm" onclick="closeEditModal()" id="edit-cancel-btn">إلغاء</button>
+          <button class="btn btn-teal btn-sm" onclick="saveEdit()" id="edit-save-btn">حفظ</button>
+        </div>
       </div>
     </div>
 
@@ -488,6 +527,7 @@ let state = {
   apiKey: localStorage.getItem(KEYS.api) || '',
   currentView: 'list',
   filter: 'all',
+  sort: 'newest',
   search: '',
   selectedId: null,
   formCat: 'commercial',
@@ -507,7 +547,7 @@ let state = {
 // ═══════════════════════════════════════════════════
 const T = {
   ar: {
-    dir:'rtl', fn:"'Noto Kufi Arabic'",
+    dir:'rtl', fn:"Arial",
     myIdeas:'أفكاري', settings:'الإعدادات', newIdea:'✨ فكرة جديدة',
     tagline:'أفكارك + ذكاء اصطناعي = مشاريع حقيقية',
     taglineSimple:'دفتر أفكارك الذكي',
@@ -521,6 +561,7 @@ const T = {
     plan:'🗺️ خطة التنفيذ', building:'جارٍ بناء الخطة...',
     analysisTitle:'تحليل الذكاء الاصطناعي', planTitle:'خطة التنفيذ',
     chatTitle:'💬 محادثة', chatPH:'اكتب ردك...', chatThinking:'يفكر...',
+    editBtn:'تعديل', editTitle:'✏️ تعديل الفكرة', editLblTitle:'العنوان', editLblDesc:'التفاصيل', editCancel:'إلغاء', editSave:'حفظ',
     you:'أنت', ai:'الذكاء الاصطناعي',
     noApiKey:'⚠️ أدخل مفتاح API من الإعدادات أولاً', goSettings:'الإعدادات',
     analysisOff:'التحليل التلقائي معطّل — يمكنك التحليل يدوياً',
@@ -554,6 +595,7 @@ const T = {
     plan:'🗺️ Execution Plan', building:'Building plan...',
     analysisTitle:'AI Analysis', planTitle:'Execution Plan',
     chatTitle:'💬 Chat', chatPH:'Type your reply...', chatThinking:'Thinking...',
+    editBtn:'Edit', editTitle:'✏️ Edit Idea', editLblTitle:'Title', editLblDesc:'Details', editCancel:'Cancel', editSave:'Save',
     you:'You', ai:'AI',
     noApiKey:'⚠️ Add your API key in Settings first', goSettings:'Settings',
     analysisOff:'Auto-analysis is off — you can still analyze manually',
@@ -680,6 +722,12 @@ function applyLang() {
   setText('analysis-card-title', '🤖 ' + tr.analysisTitle);
   setText('plan-card-title', '🗺️ ' + tr.planTitle);
   setText('chat-hdr-txt', tr.chatTitle);
+  if ($('edit-btn-txt')) setText('edit-btn-txt', tr.editBtn);
+  if ($('edit-modal-title')) setText('edit-modal-title', tr.editTitle);
+  if ($('edit-lbl-title')) setText('edit-lbl-title', tr.editLblTitle);
+  if ($('edit-lbl-desc')) setText('edit-lbl-desc', tr.editLblDesc);
+  if ($('edit-cancel-btn')) setText('edit-cancel-btn', tr.editCancel);
+  if ($('edit-save-btn')) setText('edit-save-btn', tr.editSave);
   setText('no-key-txt', tr.noApiKey);
   setText('go-settings-btn', tr.goSettings);
   setText('analysis-off-banner', tr.analysisOff);
@@ -727,11 +775,12 @@ function renderList() {
   ).join('');
 
   const q = state.search.toLowerCase();
-  const filtered = state.ideas.filter(i => {
+  let filtered = state.ideas.filter(i => {
     const mf = state.filter==='all' || i.category===state.filter ||
       (state.filter==='other' && i.category!=='commercial' && i.category!=='invention');
-    return mf && (i.title.toLowerCase().includes(q) || i.description.toLowerCase().includes(q));
+    return mf && (i.title.toLowerCase().includes(q) || (i.description||'').toLowerCase().includes(q));
   });
+  if (state.sort === 'oldest') filtered = [...filtered].reverse();
 
   const grid = $('ideas-grid');
   if (!filtered.length) {
@@ -748,6 +797,7 @@ function renderList() {
       <div class="card-footer">
         ${badgeHTML(idea.category)}
         <div class="card-dots">
+          ${idea.status==='wip' ? '<span style="font-size:10px">🔨</span>' : idea.status==='done' ? '<span style="font-size:10px">✅</span>' : ''}
           ${idea.analysis && !idea.analysis.startsWith('❌') ? '<div class="ai-dot"></div>' : ''}
           <span class="card-date">${fmtDate(idea.createdAt)}</span>
         </div>
@@ -770,7 +820,7 @@ let formCat = 'commercial';
 
 function openNew() {
   formCat = 'commercial';
-  $('idea-title-input').value = '';
+  $('idea-title-input').value = ''; $('idea-title-input').style.height = 'auto';
   $('idea-desc-input').value = '';
   $('custom-type-input').value = '';
   hide('title-error'); hide('custom-type-field');
@@ -820,7 +870,7 @@ function doSave() {
     id: Date.now().toString(),
     title, description: $('idea-desc-input').value.trim(),
     category: finalCat, createdAt: new Date().toISOString(),
-    analysis:'', plan:'', chatHistory:[], chatSummary:'',
+    analysis:'', plan:'', chatHistory:[], chatSummary:'', status:'idea',
   };
   state.ideas.unshift(idea);
   persist(KEYS.ideas, state.ideas);
@@ -853,6 +903,7 @@ function openIdea(id) {
 
   renderDetailAI();
   renderChat();
+  updateStatusPill(idea.status || 'idea');
   nav('detail');
 }
 
@@ -1034,31 +1085,68 @@ async function finishChat() {
   if (!idea || state.chatHistory.length < 2) return;
   const isAr = state.settings.lang === 'ar';
   const finishBtn = $('finish-chat-btn');
-  if (finishBtn) { finishBtn.disabled = true; finishBtn.textContent = isAr ? '⏳ جاري الحفظ...' : '⏳ Saving...'; }
+  const hasPlan = !!(idea.plan && !idea.plan.startsWith('❌'));
 
-  const system = isAr
-    ? 'أنت مساعد ملخص. اكتب بالعربية.'
-    : 'You are a summarizer assistant.';
+  const setBtn = txt => { if (finishBtn) { finishBtn.disabled = true; finishBtn.textContent = txt; } };
 
   const chatText = state.chatHistory.map(m =>
     (m.role === 'user' ? (isAr ? 'المستخدم: ' : 'User: ') : (isAr ? 'المستشار: ' : 'Advisor: ')) + m.text
   ).join('\n');
 
-  const prompt = isAr
-    ? `بناءً على هذه المحادثة حول الفكرة "${idea.title}":\n\n${chatText}\n\nاكتب ملخصاً موجزاً في نقاط تشمل:\n• أبرز ما كشفته المحادثة عن الفكرة\n• المقترحات النهائية\n• الخطوة التالية الموصى بها`
-    : `Based on this conversation about "${idea.title}":\n\n${chatText}\n\nWrite a brief bullet-point summary covering:\n• Key insights from the conversation\n• Final suggestions\n• Recommended next step`;
+  const sysBase = isAr
+    ? 'أنت مستشار أعمال وابتكار خبير. ردودك مختصرة وعملية. اكتب بالعربية.'
+    : 'You are an expert business and innovation advisor. Be concise and practical.';
 
+  // ── Step 1: Summary ──
+  setBtn(isAr ? '⏳ (١/٣) جاري الملخص...' : '⏳ (1/3) Summarizing...');
+  const summaryPrompt = isAr
+    ? `المحادثة حول فكرة "${idea.title}":\n${chatText}\n\nاكتب ملخصاً في نقاط يشمل:\n• أبرز ما كشفته المحادثة\n• المقترحات النهائية\n• الخطوة التالية`
+    : `Conversation about "${idea.title}":\n${chatText}\n\nWrite a bullet summary:\n• Key insights\n• Final suggestions\n• Next step`;
   let summary;
-  try {
-    summary = await callClaude([{ role: 'user', content: prompt }], system);
-  } catch(e) {
-    summary = errMsg(e);
+  try { summary = await callClaude([{ role:'user', content: summaryPrompt }], sysBase); }
+  catch(e) { summary = errMsg(e); }
+
+  // ── Step 2: Update Analysis ──
+  setBtn(isAr ? '⏳ (٢/٣) تحديث التحليل...' : '⏳ (2/3) Updating analysis...');
+  const analysisPrompt = isAr
+    ? `فكرة: "${idea.title}"\nالنوع: ${idea.category}\nالتفاصيل: ${idea.description||'لا يوجد'}\n\nالتحليل السابق:\n${idea.analysis||'لا يوجد'}\n\nمعلومات جديدة من المحادثة:\n${chatText}\n\nحدّث التحليل بناءً على المعلومات الجديدة. أبقِ نفس الهيكل (أسئلة + مقترحات) لكن عدّل المحتوى ليعكس ما تعلمناه.`
+    : `Idea: "${idea.title}"\nType: ${idea.category}\nDetails: ${idea.description||'None'}\n\nPrevious analysis:\n${idea.analysis||'None'}\n\nNew info from conversation:\n${chatText}\n\nUpdate the analysis based on new info. Keep same structure (questions + suggestions) but revise content to reflect what we learned.`;
+  let newAnalysis;
+  try { newAnalysis = await callClaude([{ role:'user', content: analysisPrompt }], sysBase); }
+  catch(e) { newAnalysis = idea.analysis; }
+
+  // ── Step 3: Update Plan (only if exists) ──
+  let newPlan = idea.plan;
+  if (hasPlan) {
+    setBtn(isAr ? '⏳ (٣/٣) تحديث الخطة...' : '⏳ (3/3) Updating plan...');
+    const country = state.settings.country || (isAr ? 'الكويت' : 'Kuwait');
+    const sysPlan = isAr
+      ? 'أنت مستشار تنفيذي خبير في ريادة الأعمال. ردودك عملية ومفصلة مع أسعار تقريبية. اكتب بالعربية.'
+      : 'You are an executive consultant expert in startups. Be practical and detailed with approximate prices.';
+    const planPrompt = isAr
+      ? `فكرة: "${idea.title}"\nالنوع: ${idea.category}\nالبلد: ${country}\n\nالخطة السابقة:\n${idea.plan}\n\nمعلومات جديدة من المحادثة:\n${chatText}\n\nحدّث خطة التنفيذ بناءً على المعلومات الجديدة. أبقِ نفس الهيكل (مراحل + أدوات + موردون + خطوة البداية) لكن عدّل التفاصيل.`
+      : `Idea: "${idea.title}"\nType: ${idea.category}\nCountry: ${country}\n\nPrevious plan:\n${idea.plan}\n\nNew info from conversation:\n${chatText}\n\nUpdate the execution plan based on new info. Keep same structure but revise the details.`;
+    try { newPlan = await callClaude([{ role:'user', content: planPrompt }], sysPlan); }
+    catch(e) { newPlan = idea.plan; }
   }
 
+  // ── Save everything ──
   state.chatSummary = summary;
-  state.ideas = state.ideas.map(i => i.id === idea.id ? {...i, chatSummary: summary} : i);
+  state.aiAnalysis = newAnalysis;
+  state.aiPlan = newPlan;
+  state.ideas = state.ideas.map(i => i.id === idea.id
+    ? {...i, chatSummary: summary, analysis: newAnalysis, plan: newPlan}
+    : i
+  );
   persist(KEYS.ideas, state.ideas);
-  if (finishBtn) { finishBtn.disabled = false; finishBtn.textContent = isAr ? '✅ إنهاء وحفظ الملخص' : '✅ Finish & Save Summary'; }
+
+  if (finishBtn) {
+    finishBtn.disabled = false;
+    finishBtn.textContent = isAr ? '✅ تم التحديث' : '✅ Updated';
+    setTimeout(() => {
+      if (finishBtn) finishBtn.textContent = isAr ? '✅ إنهاء وحفظ الملخص' : '✅ Finish & Save Summary';
+    }, 3000);
+  }
   renderDetailAI();
 }
 
@@ -1106,6 +1194,103 @@ async function sendChat() {
 $('chat-input').addEventListener('keydown', e => {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
 });
+
+// ═══════════════════════════════════════════════════
+// STATUS + SORT + SHARE
+// ═══════════════════════════════════════════════════
+const STATUS_CYCLE = {
+  idea: { next:'wip',  cls:'status-wip',  icon:'🔨', ar:'قيد التنفيذ', en:'In Progress' },
+  wip:  { next:'done', cls:'status-done', icon:'✅', ar:'منجزة',       en:'Done' },
+  done: { next:'idea', cls:'status-idea', icon:'💡', ar:'فكرة',        en:'Idea' },
+};
+
+function updateStatusPill(status) {
+  const s = STATUS_CYCLE[status] || STATUS_CYCLE['idea'];
+  const pill = $('status-pill');
+  pill.className = 'status-pill ' + (
+    status==='wip' ? 'status-wip' : status==='done' ? 'status-done' : 'status-idea'
+  );
+  const isAr = state.settings.lang === 'ar';
+  $('status-pill-txt').textContent = status==='wip' ? (isAr?'قيد التنفيذ':'In Progress') :
+    status==='done' ? (isAr?'منجزة':'Done') : (isAr?'فكرة':'Idea');
+  pill.childNodes[0].textContent = status==='wip' ? '🔨 ' : status==='done' ? '✅ ' : '💡 ';
+}
+
+function cycleStatus() {
+  const idea = state.ideas.find(i => i.id === state.selectedId);
+  if (!idea) return;
+  const cur = idea.status || 'idea';
+  const next = STATUS_CYCLE[cur]?.next || 'idea';
+  state.ideas = state.ideas.map(i => i.id === state.selectedId ? {...i, status: next} : i);
+  persist(KEYS.ideas, state.ideas);
+  updateStatusPill(next);
+  renderList();
+}
+
+function toggleSort() {
+  state.sort = state.sort === 'newest' ? 'oldest' : 'newest';
+  const isAr = state.settings.lang === 'ar';
+  $('sort-btn-txt').textContent = state.sort === 'newest' ? (isAr?'الأحدث':'Newest') : (isAr?'الأقدم':'Oldest');
+  renderList();
+}
+
+function shareIdea() {
+  const idea = state.ideas.find(i => i.id === state.selectedId);
+  if (!idea) return;
+  const isAr = state.settings.lang === 'ar';
+  const statusLabel = idea.status==='wip' ? (isAr?'قيد التنفيذ':'In Progress') :
+    idea.status==='done' ? (isAr?'منجزة':'Done') : (isAr?'فكرة':'Idea');
+  const nl = String.fromCharCode(10);
+  let text = (isAr ? '💡 فكرة: ' : '💡 Idea: ') + idea.title + nl;
+  if (idea.description) text += (isAr ? '📝 التفاصيل: ' : '📝 Details: ') + idea.description + nl;
+  text += (isAr ? '📌 الحالة: ' : '📌 Status: ') + statusLabel + nl;
+  if (idea.analysis && !idea.analysis.startsWith('❌')) {
+    const summary = idea.analysis.replace(/\*\*/g,'').slice(0,300);
+    text += nl + (isAr ? '🤖 التحليل:' : '🤖 Analysis:') + nl + summary + (idea.analysis.length>300?'...':'');
+  }
+  text += nl + nl + '🚀 IdeaSpark';
+  if (navigator.share) {
+    navigator.share({ text }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text).then(() => showToast(isAr ? 'تم النسخ ✓' : 'Copied ✓'));
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// EDIT
+// ═══════════════════════════════════════════════════
+function openEditModal() {
+  const idea = state.ideas.find(i => i.id === state.selectedId);
+  if (!idea) return;
+  $('edit-title-input').value = idea.title;
+  $('edit-desc-input').value = idea.description || '';
+  show('edit-modal');
+  setTimeout(() => {
+    const el = $('edit-title-input');
+    el.focus();
+    autoGrow(el);
+    el.addEventListener('input', () => autoGrow(el));
+  }, 100);
+}
+
+function closeEditModal() {
+  hide('edit-modal');
+}
+
+function saveEdit() {
+  const title = $('edit-title-input').value.trim();
+  if (!title) return;
+  const desc = $('edit-desc-input').value.trim();
+  state.ideas = state.ideas.map(i =>
+    i.id === state.selectedId ? {...i, title, description: desc} : i
+  );
+  persist(KEYS.ideas, state.ideas);
+  // Update detail view
+  $('detail-title').textContent = title;
+  if (desc) { $('detail-desc').textContent = desc; show('detail-desc'); }
+  else hide('detail-desc');
+  closeEditModal();
+}
 
 // ═══════════════════════════════════════════════════
 // DELETE
@@ -1202,6 +1387,16 @@ function clearCustomTypes() {
 // ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
+// Auto-grow textarea
+function autoGrow(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+const titleInput = $('idea-title-input');
+if (titleInput) {
+  titleInput.addEventListener('input', () => autoGrow(titleInput));
+}
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(() => {});
 }
