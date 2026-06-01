@@ -1432,33 +1432,6 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(() => {});
 }
 
-// ═══════════════════════════════════════════════════
-// SEED IDEAS (only if localStorage is empty)
-// ═══════════════════════════════════════════════════
-function seedIdeas() {
-  if (load(KEYS.ideas, []).length > 0) return;
-  const now = new Date();
-  const d = (days) => new Date(now - days*86400000).toISOString();
-  const ideas = [
-    { id:'s1',  title:'دب الرسائل الصوتية', description:'دب يحتوي على سماعة داخلية، يسجل فيه الأب أو الشخص المسافر رسائل صوتية عبر تطبيق، والطفل يضغط عليه ليسمع رسائل أبيه. مثالي لأهالي العسكريين والمغتربين.', category:'invention', status:'idea', analysis:'', plan:'', chatHistory:[], chatSummary:'', createdAt:d(13) },
-    { id:'s2',  title:'براغي السيارة السهلة الفك', description:'تصميم براغي البطارية والإطار بطريقة مبتكرة تسمح بالفك والتركيب السريع بدون أدوات معقدة، مثل مفتاح يشبه مفتاح السيارة أو زر ضغط. يحل مشكلة حقيقية خاصة للنساء.', category:'invention', status:'idea', analysis:'', plan:'', chatHistory:[], chatSummary:'', createdAt:d(12) },
-    { id:'s3',  title:'مطبخ مركزي بالأرباح المشتركة', description:'مطبخ مجهز للإيجار بالساعة لربات البيوت وغير الموظفين، يطبخون فيه ويبيع التطبيق إنتاجهم ويتقاسمون الأرباح. يوفر دخلاً ويحل مشكلة البطالة المقنعة.', category:'commercial', status:'idea', analysis:'', plan:'', chatHistory:[], chatSummary:'', createdAt:d(11) },
-    { id:'s4',  title:'Multi Modes Restaurant', description:'مطعم متعدد الأدوار، كل طابق له جو مختلف كلياً: مائي، غابات، ثلجي، نيون، فضاء. يجذب الزوار للتجربة والتصوير ونشره على السوشيال ميديا.', category:'commercial', status:'idea', analysis:'', plan:'', chatHistory:[], chatSummary:'', createdAt:d(10) },
-    { id:'s5',  title:'Talent Rest - مطعم المواهب', description:'مطعم فيه مسرح، الضيوف يأكلون ويتفرجون على مواهب شبابية حية. يدعم الفنانين الشباب ويوفر تجربة ترفيهية مختلفة.', category:'commercial', status:'idea', analysis:'', plan:'', chatHistory:[], chatSummary:'', createdAt:d(9) },
-    { id:'s6',  title:'دواسة تنظيف الحذاء بالسيارة', description:'دواسة مثبتة عند باب السيارة تنظف النعل من الطين والماء قبل الركوب. فكرة بسيطة وعملية وقابلة للتصنيع والبيع.', category:'invention', status:'idea', analysis:'', plan:'', chatHistory:[], chatSummary:'', createdAt:d(8) },
-    { id:'s7',  title:'معهد تدريب بنظام العميل الحقيقي', description:'في المعهد يتدرب الطلاب على الجرافيك والديكور والتصميم عبر تنفيذ مشاريع حقيقية لعملاء بأسعار مخفضة. العميل يوفر، المتدرب يكسب خبرة وأموالاً.', category:'commercial', status:'idea', analysis:'', plan:'', chatHistory:[], chatSummary:'', createdAt:d(7) },
-    { id:'s8',  title:'Airbnb للملابس والبدلات', description:'تأجير ملابس السهرة والبدلات الرسمية عبر تطبيق. الفكرة موجودة في الغرب (Rent the Runway) لكن لم تصل الكويت بشكل احترافي.', category:'commercial', status:'idea', analysis:'', plan:'', chatHistory:[], chatSummary:'', createdAt:d(6) },
-    { id:'s9',  title:'تطبيق الكويت السياحي', description:'تطبيق يعرض أماكن الكويت للسياح مع خرائط وتوصيات، ويعتمد على اشتراكات المطاعم والمحلات والمجمعات ومؤجري اليخوت كمصدر دخل.', category:'commercial', status:'idea', analysis:'', plan:'', chatHistory:[], chatSummary:'', createdAt:d(5) },
-    { id:'s10', title:'تطبيق الخريجين والوظائف الكويت', description:'منصة كويتية متخصصة لتسجيل الخريجين الجدد وطالبي العمل. الشركات تدفع اشتراكاً للوصول للمواهب، والأفراد يسجلون مجاناً.', category:'commercial', status:'idea', analysis:'', plan:'', chatHistory:[], chatSummary:'', createdAt:d(4) },
-    { id:'s11', title:'تخصيص الديكور الداخلي للسيارة', description:'خدمة أو محل يعدل الديكور الداخلي للسيارة حسب شخصية المالك: تصاميم بناتية بألوان وإكسسوارات، أو شبابية رياضية. سوق موجود وغير مستغل.', category:'commercial', status:'idea', analysis:'', plan:'', chatHistory:[], chatSummary:'', createdAt:d(3) },
-    { id:'s12', title:'Lamb in a Box - خرفان مثلجة', description:'استيراد خرفان مثلجة كاملة من دول رخيصة كأثيوبيا أو كينيا وتعبئتها في كراتين وبيعها في الجمعيات التعاونية بسعر تنافسي، مثل الدجاج المثلج.', category:'commercial', status:'idea', analysis:'', plan:'', chatHistory:[], chatSummary:'', createdAt:d(2) },
-    { id:'s13', title:'Homemade Food App', description:'تطبيق يربط الطباخين المنزليين بالمستهلكين. يركز على الأكل المنزلي الصحي والأصيل كميزة تنافسية عن التطبيقات الكبيرة.', category:'commercial', status:'idea', analysis:'', plan:'', chatHistory:[], chatSummary:'', createdAt:d(1) },
-    { id:'s14', title:'تطبيق بيع وتأجير الكتب المستعملة', description:'منصة لطلاب الجامعات لبيع وشراء وتأجير الكتب الدراسية المستعملة. يوفر على الطلاب وينشط التداول بين الجامعات الكويتية.', category:'commercial', status:'idea', analysis:'', plan:'', chatHistory:[], chatSummary:'', createdAt:d(0) },
-  ];
-  persist(KEYS.ideas, ideas);
-  state.ideas = ideas;
-}
-seedIdeas();
 
 nav('list');
 applyLang();
