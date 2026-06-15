@@ -861,7 +861,7 @@ body{font-family:'IBM Plex Sans Arabic','Noto Kufi Arabic',sans-serif;font-size:
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
         <button class="export-btn" onclick="openStatusSheetFromDetail()">&#x1F3F7;&#xFE0F; &#x627;&#x644;&#x62D;&#x627;&#x644;&#x629;</button>
         <button class="export-btn" onclick="openRelatedSheetFromDetail()">&#x1F517; &#x631;&#x628;&#x637;</button>
-        <button class="export-btn" onclick="openExportSheet()">&#x1F4E4; &#x62A;&#x635;&#x62F;&#x64A;&#x631;</button>
+        <button class="export-btn" onclick="openExportSheet()">&#x1F4E4; &#x62A;&#x635;&#x62F;&#x64A;&#x631; <span class="pro-badge" id="pro-badge-export-idea" style="display:none">⭐ PRO</span></button>
       </div>
       <div style="display:none" id="detail-related-section">
         <div style="font-size:12px;font-weight:700;color:var(--text3);margin-top:12px;padding-top:12px;border-top:1px solid var(--border);margin-bottom:8px">&#x623;&#x641;&#x643;&#x627;&#x631; &#x645;&#x631;&#x62A;&#x628;&#x637;&#x629;</div>
@@ -2060,6 +2060,7 @@ function openIdea(id){
   $('detail-date').textContent=fmtDate(idea.createdAt);
   if($('detail-status-badge')) $('detail-status-badge').innerHTML=statusBadgeHTML?statusBadgeHTML(idea.status):'';
   window._detailIdeaId=idea.id;
+  if($('pro-badge-export-idea')) $('pro-badge-export-idea').style.display = state.isPro ? 'none' : 'inline-flex';
   const _rel=(idea.related||[]).map(rid=>state.ideas.find(i=>i.id===rid)).filter(Boolean);
   const _rs=$('detail-related-section');
   if(_rs){if(_rel.length){$('detail-related-chips').innerHTML=_rel.map(r=>'<div class="related-chip" onclick="openIdea(\'' +r.id+ '\')">' +escHtml(r.title.slice(0,30))+ '</div>').join('');_rs.style.display='';}else{_rs.style.display='none';}}
@@ -2940,14 +2941,28 @@ function saveReminder(id){const val=$('reminder-input')?.value;if(!val)return;co
 function clearReminder(id){const idea=state.ideas.find(i=>i.id===id);if(!idea)return;delete idea.reminder;persist(KEYS.ideas,state.ideas);closeSheet();showToast('\u062a\u0645 \u0645\u0633\u062d \u0627\u0644\u062a\u0630\u0643\u064a\u0631');renderList();}
 
 function openExportSheet(){
-  showGenericSheet('<div style="padding:16px"><div style="font-size:15px;font-weight:700;margin-bottom:14px">\U0001F4E4 \u062a\u0635\u062f\u064a\u0631 \u0627\u0644\u0623\u0641\u0643\u0627\u0631</div><div style="display:flex;flex-direction:column;gap:8px"><button class="export-btn" onclick="exportIdeas(\'csv\')" style="width:100%;justify-content:center">\U0001F4CA \u062a\u0635\u062f\u064a\u0631 CSV</button><button class="export-btn" onclick="exportIdeas(\'json\')" style="width:100%;justify-content:center">\U0001F4CB \u062a\u0635\u062f\u064a\u0631 JSON</button></div></div>');
+  if(!state.isPro){ show('paywall-modal'); return; }
+  const id = window._detailIdeaId;
+  const idea = state.ideas.find(i=>i.id===id);
+  if(!idea){ return; }
+  const isAr = state.settings.lang === 'ar';
+  showGenericSheet('<div style="padding:16px"><div style="font-size:15px;font-weight:700;margin-bottom:14px">📤 '+(isAr?'تصدير الفكرة':'Export idea')+'</div><div style="display:flex;flex-direction:column;gap:8px"><button class="export-btn" onclick="exportSingleIdea(\''+id+'\',\'csv\')" style="width:100%;justify-content:center">📊 '+(isAr?'تصدير CSV':'Export CSV')+'</button><button class="export-btn" onclick="exportSingleIdea(\''+id+'\',\'json\')" style="width:100%;justify-content:center">📋 '+(isAr?'تصدير JSON':'Export JSON')+'</button></div></div>');
 }
-function exportIdeas(fmt){
+function exportSingleIdea(id,fmt){
+  const idea=state.ideas.find(i=>i.id===id);
+  if(!idea){ closeSheet(); return; }
+  const safeName = idea.title.replace(/[^\p{L}\p{N}\s-]/gu,'').trim().slice(0,40).replace(/\s+/g,'-') || 'idea';
   if(fmt==='csv'){
-    const rows=[['\u0627\u0644\u0639\u0646\u0648\u0627\u0646','\u0627\u0644\u0648\u0635\u0641','\u0627\u0644\u0646\u0648\u0639','\u0627\u0644\u062d\u0627\u0644\u0629','\u0627\u0644\u062a\u0627\u0631\u064a\u062e']];
-    state.ideas.forEach(i=>rows.push([i.title,i.description||'',i.category,i.status||'new',new Date(i.createdAt).toLocaleDateString('ar-KW')]));
-    downloadText(rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n'),'ideaspark.csv','text/csv');
-  } else { downloadText(JSON.stringify(state.ideas,null,2),'ideaspark.json','application/json'); }
+    const rows=[
+      ['العنوان','الوصف','النوع','الحالة','التاريخ'],
+      [idea.title, idea.description||'', idea.category, idea.status||'new', new Date(idea.createdAt).toLocaleDateString('ar-KW')],
+    ];
+    if(idea.analysis) rows.push(['التحليل', idea.analysis, '', '', '']);
+    if(idea.plan) rows.push(['خطة التنفيذ', idea.plan, '', '', '']);
+    downloadText(rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n'), `ideaspark-${safeName}.csv`, 'text/csv');
+  } else {
+    downloadText(JSON.stringify(idea,null,2), `ideaspark-${safeName}.json`, 'application/json');
+  }
   closeSheet();
 }
 function downloadText(c,n,m){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:m}));a.download=n;a.click();}
