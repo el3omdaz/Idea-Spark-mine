@@ -479,7 +479,7 @@ body{font-family:'IBM Plex Sans Arabic','Noto Kufi Arabic',sans-serif;font-size:
   position:fixed;inset:0;z-index:1000;
   height:100vh;height:100dvh;
   background:radial-gradient(ellipse at 50% 35%,#1a0f3a 0%,#06060e 65%);
-  display:flex;flex-direction:column;align-items:center;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:0 24px;
   padding-top:max(env(safe-area-inset-top,30px),30px);
   padding-bottom:max(env(safe-area-inset-bottom,16px),16px);
@@ -488,29 +488,29 @@ body{font-family:'IBM Plex Sans Arabic','Noto Kufi Arabic',sans-serif;font-size:
   gap:0;
 }
 .splash.hide{opacity:0;transform:scale(1.05);pointer-events:none}
-.splash-top{display:flex;flex-direction:column;align-items:center;width:100%;margin:auto 0}
-.splash-icon-wrap{position:relative;margin-bottom:12px;animation:splash-pop .6s cubic-bezier(.34,1.56,.64,1) both;flex-shrink:0}
-.splash-glow{position:absolute;inset:-16px;border-radius:38px;background:radial-gradient(circle,rgba(123,108,240,.35) 0%,transparent 70%);animation:glow-pulse 2.2s ease-in-out infinite}
-.splash-icon{width:64px;height:64px;border-radius:20px;background:linear-gradient(145deg,#18182e,#0e0e1c);border:1.5px solid rgba(123,108,240,.35);display:flex;align-items:center;justify-content:center;font-size:32px;position:relative;box-shadow:0 0 0 1px rgba(123,108,240,.12),0 12px 32px rgba(123,108,240,.28),inset 0 1px 0 rgba(255,255,255,.05)}
+.splash-top{display:flex;flex-direction:column;align-items:center;width:100%;flex-shrink:0}
+.splash-icon-wrap{position:relative;margin-bottom:16px;animation:splash-pop .6s cubic-bezier(.34,1.56,.64,1) both;flex-shrink:0}
+.splash-glow{position:absolute;inset:-18px;border-radius:42px;background:radial-gradient(circle,rgba(123,108,240,.35) 0%,transparent 70%);animation:glow-pulse 2.2s ease-in-out infinite}
+.splash-icon{width:76px;height:76px;border-radius:24px;background:linear-gradient(145deg,#18182e,#0e0e1c);border:1.5px solid rgba(123,108,240,.35);display:flex;align-items:center;justify-content:center;font-size:38px;position:relative;box-shadow:0 0 0 1px rgba(123,108,240,.12),0 14px 38px rgba(123,108,240,.28),inset 0 1px 0 rgba(255,255,255,.05)}
 @keyframes splash-pop{from{transform:scale(.4) rotate(-10deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
 @keyframes glow-pulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
-.splash-name{font-size:28px;font-weight:800;letter-spacing:-.6px;background:linear-gradient(90deg,#7b6cf0,#0fd9a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;animation:sfade .5s .25s both;flex-shrink:0}
-.splash-tagline{font-size:13px;color:rgba(255,255,255,.5);text-align:center;line-height:1.5;animation:sfade .5s .4s both;flex-shrink:0}
+.splash-name{font-size:32px;font-weight:800;letter-spacing:-.7px;background:linear-gradient(90deg,#7b6cf0,#0fd9a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;animation:sfade .5s .25s both;flex-shrink:0}
+.splash-tagline{font-size:13.5px;color:rgba(255,255,255,.5);text-align:center;line-height:1.55;animation:sfade .5s .4s both;flex-shrink:0}
 .splash-tagline b{color:#0fd9a0;font-weight:700}
-.splash-creator{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.22);margin-top:10px;animation:sfade .5s .55s both;flex-shrink:0}
+.splash-creator{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.22);margin-top:18px;animation:sfade .5s .55s both;flex-shrink:0}
 .splash-creator b{color:rgba(123,108,240,.9);font-weight:700;letter-spacing:1px}
-.splash-social{display:flex;gap:7px;margin-top:10px;animation:sfade .5s .65s both;flex-shrink:0;flex-wrap:wrap;justify-content:center}
-.soc-btn{display:flex;flex-direction:column;align-items:center;gap:4px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:7px 9px;cursor:pointer;text-decoration:none;transition:all .2s;min-width:58px}
+.splash-social{display:flex;gap:12px;margin-top:14px;animation:sfade .5s .65s both;flex-shrink:0;flex-wrap:wrap;justify-content:center}
+.soc-btn{display:flex;flex-direction:column;align-items:center;gap:6px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:12px 18px;cursor:pointer;text-decoration:none;transition:all .2s;min-width:78px}
 .soc-btn:active{transform:scale(.94);background:rgba(255,255,255,.1)}
-.soc-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px}
-.soc-name{font-size:9px;font-weight:700;color:rgba(255,255,255,.55);white-space:nowrap}
-.splash-lang-box{margin-top:10px;width:min(320px,92%);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.soc-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.soc-name{font-size:11px;font-weight:700;color:rgba(255,255,255,.6);white-space:nowrap}
+.splash-lang-box{margin-top:22px;width:min(320px,92%);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px;flex-shrink:0}
 .splash-lang-title{font-size:11px;color:rgba(255,255,255,.72);font-weight:800;text-align:center}
 .splash-lang-select{width:100%;background:rgba(0,0,0,.28);color:white;border:1px solid rgba(255,255,255,.22);border-radius:11px;padding:9px 12px;font-family:inherit;font-size:13px;font-weight:800;outline:none}
 .splash-lang-select option{background:#15151f;color:white}
-.splash-start{width:100%;padding:14px;border-radius:16px;border:none;cursor:pointer;background:linear-gradient(135deg,#7b6cf0,#9d5fe8);color:#fff;font-family:inherit;font-size:15px;font-weight:700;box-shadow:0 8px 30px rgba(123,108,240,.45);transition:all .2s;margin-top:12px;animation:sfade .5s .75s both;display:flex;align-items:center;justify-content:center;gap:10px;flex-shrink:0;width:100%;max-width:340px}
+.splash-start{width:100%;padding:15px;border-radius:16px;border:none;cursor:pointer;background:linear-gradient(135deg,#7b6cf0,#9d5fe8);color:#fff;font-family:inherit;font-size:16px;font-weight:700;box-shadow:0 8px 30px rgba(123,108,240,.45);transition:all .2s;margin-top:24px;animation:sfade .5s .75s both;display:flex;align-items:center;justify-content:center;gap:10px;flex-shrink:0;width:100%;max-width:340px}
 .splash-start:active{transform:scale(.97);box-shadow:0 4px 14px rgba(123,108,240,.35)}
-.splash-ver{font-size:10px;color:rgba(255,255,255,.18);margin-top:6px;animation:sfade .5s .85s both;flex-shrink:0}
+.splash-ver{font-size:10px;color:rgba(255,255,255,.18);margin-top:10px;animation:sfade .5s .85s both;flex-shrink:0}
 @keyframes sfade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
 /* ── Bottom Sheet (Theme Picker) ── */
@@ -639,7 +639,7 @@ body{font-family:'IBM Plex Sans Arabic','Noto Kufi Arabic',sans-serif;font-size:
       </a>
       <a class="soc-btn" href="https://snapchat.com/add/QoooLxxxZ" target="_blank">
         <div class="soc-icon" style="background:#fffc0022">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="#fffc00"><path d="M12.206.793c.99 0 4.347.276 5.93 3.821.529 1.193.403 3.219.299 4.847l-.003.06c-.012.18-.022.345-.03.51.083.045.199.09.345.09.479-.001.963-.276 1.498-.276.271 0 .57.06.787.181.218.12.33.301.33.478 0 .571-.688.964-1.052 1.132-.01.005-.048.025-.058.029-.062.028-.116.051-.169.075l-.164.075c-.4.184-.732.336-1.04.55-.068.048-.13.093-.185.135.143.437.324.84.468 1.199.093.235.177.448.244.648.25.76.385 1.47.385 2.098 0 .871-.253 1.613-.753 2.204-.5.59-1.215.949-2.128 1.065-.286.034-.55.049-.797.049l-.175-.003c-.33 0-.648.044-.952.09-.538.081-1.037.157-1.546.362-.573.231-1.12.697-1.752 1.255l-.03.028c-.392.35-.843.756-1.368.996-.46.21-.944.308-1.457.308-.024 0-.048-.001-.073-.002-.024.001-.048.002-.073.002-.513 0-.997-.098-1.457-.308-.525-.24-.976-.646-1.368-.996l-.03-.028c-.632-.558-1.18-1.024-1.752-1.255-.509-.205-1.008-.281-1.546-.362-.304-.046-.622-.09-.952-.09l-.175.003c-.247 0-.511-.015-.797-.049-.913-.116-1.628-.475-2.128-1.065-.5-.591-.753-1.333-.753-2.204 0-.628.135-1.338.385-2.098.067-.2.151-.413.244-.648.144-.359.325-.762.468-1.199-.055-.042-.117-.087-.185-.135-.308-.214-.64-.366-1.04-.55l-.164-.075c-.053-.024-.107-.047-.169-.075-.01-.004-.048-.024-.058-.029-.364-.168-1.052-.561-1.052-1.132 0-.177.112-.358.33-.478.217-.121.516-.181.787-.181.535 0 1.019.275 1.498.276.146 0 .262-.045.345-.09-.008-.165-.018-.33-.03-.51l-.003-.06c-.104-1.628-.23-3.654.299-4.847C7.86 1.07 11.217.793 12.206.793z"/></svg>
+          <svg width="22" height="22" viewBox="0 0 100 100"><path fill="#fffc00" d="M15,60 C15,12 85,12 85,60 L85,78 C77.22,94 69.44,94 61.67,78 C53.89,94 46.11,94 38.33,78 C30.56,94 22.78,94 15.00,78 L15,60 Z"/><circle cx="38" cy="38" r="5" fill="#1a1a2e"/><circle cx="62" cy="38" r="5" fill="#1a1a2e"/></svg>
         </div>
         <span class="soc-name">QoooLxxxZ</span>
       </a>
