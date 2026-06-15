@@ -2949,7 +2949,7 @@ function dismissSplash() { try{
   const splash = $('splash');
   splash.classList.add('hide');
   setTimeout(() => { splash.style.display = 'none'; }, 520);
-  nav('new'); }catch(e){ const splash=document.getElementById('splash'); if(splash) splash.style.display='none'; } }
+  nav('list'); }catch(e){ const splash=document.getElementById('splash'); if(splash) splash.style.display='none'; } }
 
 
 const STATUS_MAP = {
@@ -3191,7 +3191,7 @@ $('content').addEventListener('scroll',()=>{
   $('back-float').classList.toggle('show', state.currentView==='detail' && $('content').scrollTop>240);
 },{passive:true});
 
-nav('new');
+nav('list');
 </script>
 <style>body{overflow-y:auto!important}.splash{min-height:100vh;padding-bottom:120px!important}</style><style>html[lang="fa"] body, html[lang="fa"] input, html[lang="fa"] textarea, html[lang="fa"] button, html[lang="fa"] select{font-family:"IBM Plex Sans Arabic","Tahoma",sans-serif!important}</style></body>
 </html>
