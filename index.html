@@ -733,6 +733,15 @@ html[lang="en"] .detail-summary-text:empty:before{content:attr(data-en-placehold
           <input class="input" id="custom-type-input" placeholder="اكتب نوعاً مخصصاً..." list="saved-types-list">
           <datalist id="saved-types-list"></datalist>
         </div>
+        <div class="field hidden" id="new-form-model-field">
+          <div class="field-label" style="display:flex;align-items:center;justify-content:space-between">
+            <span data-ar="نموذج الذكاء الاصطناعي" data-en="AI model">نموذج الذكاء الاصطناعي</span>
+            <span class="sdesc" id="new-form-model-desc" style="font-size:11px"></span>
+          </div>
+          <select id="new-form-model-select" onchange="setModel(this.value)"
+            style="width:100%;background:var(--s2);color:var(--text);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13px;font-weight:600;outline:none;cursor:pointer">
+          </select>
+        </div>
         <div class="form-actions">
           <button class="btn btn-primary" id="save-btn" onclick="doSave()" data-ar="حفظ الفكرة" data-en="Save idea">حفظ الفكرة</button>
           <button class="btn btn-ghost" onclick="nav('list')">📋 أفكاري</button>
@@ -1482,6 +1491,10 @@ function renderModelSelect() {
   const quickSel = $('ai-quick-model-select');
   if(quickSel){ quickSel.innerHTML = optionsHtml; }
   setText('ai-quick-model-desc', curModel.desc);
+
+  const newFormSel = $('new-form-model-select');
+  if(newFormSel){ newFormSel.innerHTML = optionsHtml; }
+  setText('new-form-model-desc', curModel.desc);
 }
 
 function setModel(id) {
@@ -1490,9 +1503,11 @@ function setModel(id) {
   const m = OR_MODELS.find(m=>m.id===id) || OR_MODELS[0];
   setText('model-desc-txt', m.desc);
   setText('ai-quick-model-desc', m.desc);
-  // keep both selects in sync regardless of which one triggered the change
+  setText('new-form-model-desc', m.desc);
+  // keep all selects in sync regardless of which one triggered the change
   if($('model-select')) $('model-select').value = id;
   if($('ai-quick-model-select')) $('ai-quick-model-select').value = id;
+  if($('new-form-model-select')) $('new-form-model-select').value = id;
 }
 
 const THEMES = [
@@ -1667,6 +1682,10 @@ function nav(view) {
   if(view==='ai-new'){
     if(state.apiKey){ show('ai-quick-model-field'); renderModelSelect(); }
     else hide('ai-quick-model-field');
+  }
+  if(view==='new'){
+    if(state.apiKey){ show('new-form-model-field'); renderModelSelect(); }
+    else hide('new-form-model-field');
   }
 
   // re-apply translation to freshly-rendered content
@@ -3050,8 +3069,8 @@ function dismissSplash() { try{
 
 
 const STATUS_MAP = {
-  new:      {label:'\u062c\u062f\u064a\u062f\u0629',    icon:'\U0001F195', cls:'status-new'},
-  studying: {label:'\u0642\u064a\u062f \u0627\u0644\u062f\u0631\u0627\u0633\u0629', icon:'\U0001F50D', cls:'status-studying'},
+  new:      {label:'\u062c\u062f\u064a\u062f\u0629',    icon:'🆕', cls:'status-new'},
+  studying: {label:'\u0642\u064a\u062f \u0627\u0644\u062f\u0631\u0627\u0633\u0629', icon:'🔍', cls:'status-studying'},
   rejected: {label:'\u0645\u0631\u0641\u0648\u0636\u0629',  icon:'\u274C', cls:'status-rejected'},
   done:     {label:'\u0645\u0646\u0641\u0651\u0630\u0629',   icon:'\u2705', cls:'status-done'},
 };
