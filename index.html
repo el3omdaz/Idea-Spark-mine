@@ -600,8 +600,67 @@ html[lang="en"] .detail-summary-text:empty:before{content:attr(data-en-placehold
 .fab-backdrop{position:fixed;inset:0;z-index:150;display:none}
 .fab-backdrop.show{display:block}
 </style>
-</head>
-<body>
+<style>
+:root{
+  --bg:#0b0f1a;
+  --card:#121a2a;
+  --primary:#7c5cff;
+  --accent:#00d4ff;
+  --text:#ffffff;
+  --muted:#a6b0c3;
+}
+
+body{
+  margin:0;
+  font-family: Arial;
+  background:var(--bg);
+  color:var(--text);
+}
+
+.container{
+  max-width:520px;
+  margin:auto;
+  padding:20px;
+}
+
+.card{
+  background:var(--card);
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:12px;
+}
+
+button{
+  background:var(--primary);
+  color:white;
+  border:none;
+  padding:12px 14px;
+  border-radius:12px;
+  width:100%;
+}
+
+input, textarea{
+  width:100%;
+  background:#0f1524;
+  border:none;
+  padding:12px;
+  border-radius:12px;
+  color:white;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.small{
+  color:var(--muted);
+  font-size:13px;
+}
+</style></head>
+<body class='app'>
 <div class="app">
 
 <!-- Splash Screen -->
