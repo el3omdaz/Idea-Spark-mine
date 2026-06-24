@@ -1,15 +1,13 @@
 {
-  "name": "IdeaSpark",
-  "short_name": "IdeaSpark",
-  "description": "حفظ وتحليل أفكارك بالذكاء الاصطناعي",
-  "start_url": "/Idea-Spark/index.html",
-  "scope": "/Idea-Spark/",
+  "name": "IdeaSpark Full",
+  "short_name": "IdeaSpark Full",
+  "description": "Your Smart Idea Notebook with AI — دفتر أفكارك الذكي (Full Unlocked)",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#08080f",
   "theme_color": "#08080f",
   "orientation": "portrait",
-  "lang": "ar",
-  "dir": "rtl",
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
