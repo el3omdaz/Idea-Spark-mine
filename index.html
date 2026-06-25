@@ -1303,12 +1303,17 @@ html[lang="en"] .detail-summary-text:empty:before{content:attr(data-en-placehold
           <div class="pw-plan-title-row"><span class="pw-plan-name" data-ar="مدى الحياة" data-en="Lifetime">مدى الحياة</span><span class="pw-plan-badge" data-ar="🔥 أفضل قيمة" data-en="🔥 Best value">🔥 أفضل قيمة</span></div>
           <div class="pw-plan-sub" data-ar="= أقل من 4 شهور اشتراك، تدفعها مرة واحدة فقط" data-en="= less than 4 months, pay once forever">= أقل من 4 شهور اشتراك، تدفعها مرة واحدة فقط</div>
         </div>
-        <div class="pw-plan-price">$6.99<small> · <span data-ar="مرة واحدة" data-en="once">مرة واحدة</span></small></div>
+        <div class="pw-plan-price" id="pw-price-lifetime">$6.99<small> · <span data-ar="مرة واحدة" data-en="once">مرة واحدة</span></small></div>
       </div>
       <div class="pw-plan" onclick="purchasePlan('monthly')">
         <div class="pw-plan-name" data-ar="شهري" data-en="Monthly">شهري</div>
-        <div class="pw-plan-price">$1.99<small> / <span data-ar="شهر" data-en="month">شهر</span></small></div>
+        <div class="pw-plan-price" id="pw-price-monthly">$1.99<small> / <span data-ar="شهر" data-en="month">شهر</span></small></div>
       </div>
+    </div>
+    <div class="pw-legal" style="text-align:center;margin-top:10px;font-size:11px;color:var(--text3)">
+      <a href="#" onclick="openLegalLink('terms');return false;" style="color:var(--text3);text-decoration:underline" data-ar="شروط الاستخدام" data-en="Terms of Use">شروط الاستخدام</a>
+      &nbsp;·&nbsp;
+      <a href="#" onclick="openLegalLink('privacy');return false;" style="color:var(--text3);text-decoration:underline" data-ar="سياسة الخصوصية" data-en="Privacy Policy">سياسة الخصوصية</a>
     </div>
     <button class="pw-restore" onclick="restorePurchases()" data-ar="اشتريت من قبل؟ استعد اشتراكك" data-en="Already purchased? Restore it">اشتريت من قبل؟ استعد اشتراكك</button>
     <br>
@@ -1656,14 +1661,14 @@ const THEMES = [
   { id:'beige',    label:'Beige',     bg:'#f2e9dc', dot:'#8b5e3c' },
   { id:'rose',     label:'Rose',      bg:'#f5e9e9', dot:'#b05070' },
   { id:'lavender', label:'Lavender 💜',bg:'#f4f0fc', dot:'#9b6de0' },
-  { id:'custom',   label:'Custom 🖌️', bg:'#7b6cf0', dot:'#7b6cf0', isCustom:true },
+  { id:'custom',   label:'Custom 🖌️', bg:'#7b6cf0', dot:'#7b6cf0', free:true, isCustom:true },
 ];
 
 function applyTheme(themeId, opts) {
   const theme = THEMES.find(t=>t.id===themeId);
   if(theme && !theme.free && !state.isPro){
     if(opts&&opts.silent){ themeId='dark'; }
-    else { show('paywall-modal'); renderSheetSwatches(); return; }
+    else { openPaywall(); renderSheetSwatches(); return; }
   }
   if(themeId==='custom' && !(opts&&opts.silent)){ closeThemeSheet(); openCustomThemeSheet(); return; }
   state.settings.theme = themeId;
@@ -1708,7 +1713,7 @@ function clearCustomThemeVars(){
   ['--bg','--text','--accent','--accent2','--accent3','--s1','--s2','--s3','--border','--border2','--text2','--text3'].forEach(v=>root.removeProperty(v));
 }
 function openCustomThemeSheet(){
-  if(!state.isPro){ show('paywall-modal'); return; }
+  if(!state.isPro){ openPaywall(); return; }
   const c = state.settings.customColors || {bg:'#08080f',text:'#f4f4fb',accent:'#7b6cf0'};
   $('ct-bg').value = c.bg; $('ct-text').value = c.text; $('ct-accent').value = c.accent;
   $('custom-theme-sheet').classList.add('open');
@@ -2307,12 +2312,12 @@ function renderSavedTypes(){
 }
 
 function doSave(){
-  if(!state.isPro && state.ideas.length >= FREE_IDEA_LIMIT){ show('paywall-modal'); return; }
+  if(!state.isPro && state.ideas.length >= FREE_IDEA_LIMIT){ openPaywall(); return; }
   const title=$('idea-title-input').value.trim();
   if(!title){$('title-error').textContent='اكتب عنوان الفكرة';show('title-error');return;}
   hide('title-error');
   const customType=$('custom-type-input').value.trim();
-  if(formCat==='other'&&customType&&!state.isPro){ show('paywall-modal'); return; }
+  if(formCat==='other'&&customType&&!state.isPro){ openPaywall(); return; }
   const finalCat=formCat==='other'&&customType?customType:formCat;
   if(formCat==='other'&&customType&&!state.customTypes.includes(customType)){
     state.customTypes.push(customType);persist(KEYS.types,state.customTypes);
@@ -2332,7 +2337,7 @@ function doSave(){
 }
 
 async function doAiQuickSave(){
-  if(!state.isPro && state.ideas.length >= FREE_IDEA_LIMIT){ show('paywall-modal'); return; }
+  if(!state.isPro && state.ideas.length >= FREE_IDEA_LIMIT){ openPaywall(); return; }
   const prompt=$('ai-quick-input').value.trim();
   if(!prompt){$('ai-quick-error').textContent='اكتب وصف الفكرة أولاً';show('ai-quick-error');return;}
   if(!state.apiKey){$('ai-quick-error').textContent='⚠️ أدخل مفتاح API من الإعدادات';show('ai-quick-error');return;}
@@ -2995,7 +3000,7 @@ function wzEdit(){
 
 function wzConfirmSave(){
   if(!wz?.result) return;
-  if(!state.isPro && state.ideas.length >= FREE_IDEA_LIMIT){ show('paywall-modal'); return; }
+  if(!state.isPro && state.ideas.length >= FREE_IDEA_LIMIT){ openPaywall(); return; }
   const r=wz.result;
   const analysisSeed=
     `**التقييم:**\n`+
@@ -3049,7 +3054,7 @@ function confirmDelete(){
 // BACKUP & RESTORE
 // ═══════════════════════════════════════════════════
 function backupData(){
-  if(!state.isPro){ show('paywall-modal'); return; }
+  if(!state.isPro){ openPaywall(); return; }
   const data={ideas:state.ideas,customTypes:state.customTypes,exportedAt:new Date().toISOString()};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
@@ -3060,7 +3065,7 @@ function backupData(){
 }
 
 function triggerRestore(){
-  if(!state.isPro){ show('paywall-modal'); return; }
+  if(!state.isPro){ openPaywall(); return; }
   $('restore-file-input').click();
 }
 
@@ -3111,7 +3116,7 @@ function renderSettings(){
       proBlock.innerHTML = `
         <div class="slabel">${isAr?'النسخة المجانية':'Free plan'}</div>
         <div class="sdesc" style="margin:4px 0 12px">${isAr ? `${used} / ${FREE_IDEA_LIMIT} فكرة مستخدمة` : `${used} / ${FREE_IDEA_LIMIT} ideas used`}</div>
-        <button class="btn btn-primary btn-sm" onclick="show('paywall-modal')">⭐ ${isAr?'الترقية إلى Pro':'Upgrade to Pro'}</button>
+        <button class="btn btn-primary btn-sm" onclick="openPaywall()">⭐ ${isAr?'الترقية إلى Pro':'Upgrade to Pro'}</button>
         <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="restorePurchases()">${isAr?'استرجاع المشتريات':'Restore purchases'}</button>`;
     }
   }
@@ -3251,6 +3256,20 @@ function clearCustomTypes(){
 // ═══════════════════════════════════════════════════
 // Product IDs — must match exactly what you configure in:
 //   App Store Connect / Google Play Console  →  RevenueCat dashboard
+// ⚠️ REQUIRED BY APPLE before submission: fill in real, publicly-reachable URLs.
+const LEGAL_URLS = {
+  terms: 'https://el3omdaz.github.io/ideaspark-privacy/terms.html',
+  privacy: 'https://el3omdaz.github.io/ideaspark-privacy/',
+};
+function openLegalLink(kind){
+  const url = LEGAL_URLS[kind];
+  if(!url || url.includes('YOUR_DOMAIN')){
+    showToast(uiText('⚠️ لم يتم ضبط رابط هذه الصفحة بعد','⚠️ This link has not been set up yet'));
+    return;
+  }
+  if(window?.Capacitor?.Plugins?.Browser) window.Capacitor.Plugins.Browser.open({ url });
+  else window.open(url, '_blank');
+}
 const RC_API_KEY = {
   ios: 'test_xnrGgNTQYznNexFyOUucJIIbedo',     // ⚠️ Sandbox key — replace with appl_... (Production) after App Store Connect link
   android: 'YOUR_REVENUECAT_ANDROID_PUBLIC_KEY', // goog_xxxxxxxx
@@ -3291,6 +3310,26 @@ function setProStatus(isPro){
   localStorage.setItem(KEYS.pro, '1');
   hide('paywall-modal');
   if(state.currentView==='settings') renderSettings();
+}
+
+async function openPaywall(){
+  show('paywall-modal');
+  renderLivePrices();
+}
+async function renderLivePrices(){
+  const Purchases = getPurchasesPlugin();
+  if(!Purchases) return; // browser/PWA preview — keep static placeholder prices
+  try{
+    const offerings = await Purchases.getOfferings();
+    const lifetimePkg = offerings?.current?.availablePackages?.find(p=>p.identifier===RC_PACKAGE_IDS.lifetime);
+    const monthlyPkg = offerings?.current?.availablePackages?.find(p=>p.identifier===RC_PACKAGE_IDS.monthly) || offerings?.current?.monthly;
+    if(lifetimePkg?.product?.priceString && $('pw-price-lifetime')){
+      $('pw-price-lifetime').innerHTML = `${lifetimePkg.product.priceString}<small> · <span data-ar="مرة واحدة" data-en="once">${uiText('مرة واحدة','once')}</span></small>`;
+    }
+    if(monthlyPkg?.product?.priceString && $('pw-price-monthly')){
+      $('pw-price-monthly').innerHTML = `${monthlyPkg.product.priceString}<small> / <span data-ar="شهر" data-en="month">${uiText('شهر','month')}</span></small>`;
+    }
+  }catch(e){ console.log('RC price fetch error', e); }
 }
 
 async function purchasePlan(plan){
@@ -3398,7 +3437,7 @@ function saveReminder(id){const val=$('reminder-input')?.value;if(!val)return;co
 function clearReminder(id){const idea=state.ideas.find(i=>i.id===id);if(!idea)return;delete idea.reminder;persist(KEYS.ideas,state.ideas);closeSheet();showToast('\u062a\u0645 \u0645\u0633\u062d \u0627\u0644\u062a\u0630\u0643\u064a\u0631');renderList();}
 
 function openExportSheet(){
-  if(!state.isPro){ show('paywall-modal'); return; }
+  if(!state.isPro){ openPaywall(); return; }
   const id = window._detailIdeaId;
   const idea = state.ideas.find(i=>i.id===id);
   if(!idea){ return; }

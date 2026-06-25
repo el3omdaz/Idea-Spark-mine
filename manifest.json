@@ -1,7 +1,7 @@
 {
   "name": "IdeaSpark Full",
   "short_name": "IdeaSpark Full",
-  "description": "Your Smart Idea Notebook with AI — دفتر أفكارك الذكي (Full Unlocked)",
+  "description": "Your Smart Idea Notebook with AI — دفتر أفكارك الذكي",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
